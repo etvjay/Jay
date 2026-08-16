@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A code-first research story on OpenRails Pact: turning permitted proposals into durable economic commitments without conflating authorization with execution."><title>Pact — Accepted Economic Commitment — Jason V</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/editorial.css"></head>
+<body class="editorial ed-story">
+<div class="ed-topline"><div class="ed-shell"><span>Jason V / Experiment 01 / P-004</span><span>OpenRails / Commitment / Proof policy</span></div></div>
+<header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice / selected work</small></a><nav class="ed-nav"><a aria-current="page" href="../">Research</a><a href="../../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#practice">Work &amp; Skills</a><a href="../../#about">About</a></nav><div class="ed-header-meta">P-004 / Pact<br>Implemented runtime primitive</div></div></header>
+<main>
+<section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Experiment 01<br>P-004<br>OpenRails<br>Accepted commitment</div><div><h1>Pact</h1><p class="ed-story-deck">Where should delegated permission end and a specific economic commitment begin?</p><div class="ed-statusline"><span>Implemented</span><span>ALLOW-gated</span><span>Terms-bound</span><span>Proof-aware</span></div></div></div></section>
+<div class="ed-shell ed-story-body">
+<aside class="ed-story-toc"><a href="#pressure">Pressure</a><a href="#substrate">EVM substrate</a><a href="#shape">Pact shape</a><a href="#activation">Activation</a><a href="#allows">What it allows</a><a href="#boundary">Boundary</a></aside>
+<article class="ed-story-main">
+<section id="pressure"><div class="ed-section-kicker">01 / Pressure</div><h2>Permission is broader than commitment.</h2><p class="lead">A Path may authorize an agent to perform a class of actions. That does not mean every possible action inside that class has already been agreed.</p><pre class="ed-code"><code>Path:
+agent may PAY up to 10,000 USDC
+under these limits
+
+≠
+
+Pact:
+these parties accepted
+this exact 4,200 USDC economic action
+under this proof policy</code></pre><p>OpenRails therefore keeps delegation and commitment as separate objects instead of treating “authorized” as “already agreed.”</p></section>
+<section id="substrate"><div class="ed-section-kicker">02 / Existing EVM substrate</div><h2>A typed signature authenticates a message. It does not create a whole commercial lifecycle.</h2><p>EIP-712 standardizes structured signing. It lets an application bind meaningful fields into a signature, but the application still decides what state transition that signature authorizes and how replay, lifecycle, evidence, and execution are handled.</p><p>Pact lives at that application layer. It is not a new signature scheme and not a new Ethereum transaction type. It records that a proposal which survived Path policy evaluation has become an active commitment inside the OpenRails Runtime.</p></section>
+<section id="shape"><div class="ed-section-kicker">03 / Construction</div><h2>The commitment preserves its lineage.</h2><pre class="ed-code"><code>type Pact = {
+  workspaceRef: WorkspaceRef;
+  pathRef: PathRef;
+  proposalRef: ProposalRef;
+  decisionRef: BaphometDecisionRef;
+
+  parties: ActorRef[];
+  paymentTerms: PaymentTerms;
+  proofPolicy: ProofPolicy;
+
+  status: "DRAFT" | "ACTIVE" | "REVOKED" | "EXPIRED";
+  activatedAt?: string;
+
+  signatureBinding: SignatureBinding;
+  provenance: Provenance;
+};</code></pre><p>The Pact does not merely copy payment terms. It points back to the Workspace, delegated Path, normalized Proposal, and policy Decision that made the commitment admissible.</p><p>The proof policy can also state whether proof is required and exactly where in the later lifecycle it must appear: before authorization, claim, checkpoint settlement, or final settlement.</p></section>
+<section id="activation"><div class="ed-section-kicker">04 / Activation</div><h2>A blocked proposal cannot become a Pact.</h2><pre class="ed-code"><code>if (proposal.status !== "ALLOWED" ||
+    decision.decision !== "ALLOW") {
+  throw new RuntimeError(
+    "POLICY_BLOCKED",
+    "Pact signing requires an ALLOW Baphomet Decision."
+  );
+}</code></pre><p>The Runtime then checks that the Decision refers to the same Proposal, input hash, policy version, and Pact reference.</p><pre class="ed-code"><code>assertReference(decision.proposalRef, proposal.id);
+
+if (decision.inputHash !== proposal.inputHash)
+  throw TERMS_MISMATCH;
+
+if (decision.policyVersion !== proposal.policyVersion)
+  throw POLICY_BLOCKED;
+
+assertReference(decision.pactRef, pact.id);</code></pre><p>The economic terms must remain unchanged across Intent, Proposal, and Pact:</p><pre class="ed-code"><code>if (!sameValue(pact.paymentTerms, intent.paymentTerms) ||
+    !sameValue(pact.paymentTerms, proposal.normalizedTerms)) {
+  throw new RuntimeError(
+    "TERMS_MISMATCH",
+    "Pact payment terms do not match the Intent and Proposal."
+  );
+}</code></pre><p>Finally, the signer must be one of the Pact parties and the Path is checked again before the Pact moves from <code>DRAFT</code> to <code>ACTIVE</code>.</p><pre class="ed-code"><code>const signerActor = pact.parties
+  .map(requireActor)
+  .find(actor =&gt;
+    actor.walletAddress &amp;&amp;
+    sameAddress(actor.walletAddress, binding.signer)
+  );
+
+if (!signerActor) throw AUTHORIZATION_REQUIRED;
+
+const activatedPact = {
+  ...pact,
+  status: "ACTIVE",
+  activatedAt: now
+};</code></pre></section>
+<section id="allows"><div class="ed-section-kicker">05 / What it allows</div><h2>A later consequence can retain the commitment that produced it.</h2><pre class="ed-code"><code>Workspace
+   ↓
+Path
+   ↓
+Intent
+   ↓
+Proposal
+   ↓
+ALLOW decision
+   ↓
+PACT
+   ↓
+Proof
+   ↓
+Settlement / Receipt</code></pre><p>This makes it possible to distinguish several questions that a transaction alone cannot answer:</p><div class="ed-compare"><div><strong>Path</strong><p>Was this class of action within delegated authority?</p></div><div><strong>Pact</strong><p>Which exact economic terms did the parties commit to?</p></div><div><strong>Proof</strong><p>What evidence was required before a later transition?</p></div><div><strong>Receipt</strong><p>What economic consequence was actually observed?</p></div></div></section>
+<section id="boundary"><div class="ed-section-kicker">06 / Boundary</div><h2>Pact is not a legal-contract claim.</h2><p class="lead">The accurate term is a machine-readable economic commitment inside OpenRails.</p><p>Whether a Pact has legal enforceability in a jurisdiction is a separate question and is not implied by the Runtime object. Likewise, activating a Pact does not mean money has moved: the Runtime response records the Pact commitment while transaction and financial effects remain separate.</p><pre class="ed-code"><code>permission ≠ commitment
+commitment ≠ proof
+commitment ≠ settlement
+settlement ≠ legal enforceability</code></pre></section>
+</article>
+<aside class="ed-aside"><div class="ed-aside-box"><h3>Invariant</h3><p>No Pact from a BLOCK decision. Terms must stay consistent across Intent → Proposal → Pact.</p></div><div class="ed-aside-box"><h3>Useful separation</h3><ul><li>delegation</li><li>proposal</li><li>policy decision</li><li>commitment</li><li>proof</li><li>financial execution</li></ul></div><div class="ed-aside-box"><h3>Primary references</h3><div class="ed-source-list"><a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712 typed signing ↗</a><a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails source ↗</a></div></div></aside>
+</div>
+<div class="ed-shell ed-story-next"><a href="../railscard/"><span>Next primitive</span><strong>RailsCard — Deferred Economic Authority ↗</strong></a></div>
+</main>
+<footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Pact</div><small>P-004 / OpenRails / Accepted economic commitment</small></div><div><a href="../../">Portfolio index</a><br><a href="../">Research archive</a></div><div><a href="../path/">Previous: Path ↗</a></div></div></footer>
+</body></html>
