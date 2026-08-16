@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A code-first research story on OpenRails RailsCard: deferred signed payment authority, bearer and recipient-bound claims, funding boundaries, and replay protection."><title>RailsCard — Deferred Economic Authority — Jason V</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/editorial.css"></head>
+<body class="editorial ed-story">
+<div class="ed-topline"><div class="ed-shell"><span>Jason V / Experiment 01 / P-005</span><span>OpenRails / Deferred authority / Claimable payment</span></div></div>
+<header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice / selected work</small></a><nav class="ed-nav"><a aria-current="page" href="../">Research</a><a href="../../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#practice">Work &amp; Skills</a><a href="../../#about">About</a></nav><div class="ed-header-meta">P-005 / RailsCard<br>Implemented payment primitive</div></div></header>
+<main>
+<section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Experiment 01<br>P-005<br>OpenRails<br>Deferred economic authority</div><div><h1>RailsCard</h1><p class="ed-story-deck">Can a payment authorization exist before its eventual redemption without pretending that signed authority is already funded settlement?</p><div class="ed-statusline"><span>Implemented</span><span>Bearer / recipient-bound</span><span>EIP-712 signed</span><span>Deferred claim</span></div></div></div></section>
+<div class="ed-shell ed-story-body">
+<aside class="ed-story-toc"><a href="#pressure">Pressure</a><a href="#substrate">EVM substrate</a><a href="#shape">RailsCard shape</a><a href="#claim">Claim path</a><a href="#funding">Authorization vs funding</a><a href="#lanes">Nonce lanes</a><a href="#boundary">Boundary</a></aside>
+<article class="ed-story-main">
+<section id="pressure"><div class="ed-section-kicker">01 / Pressure</div><h2>A payment does not always need to execute when it is authorized.</h2><p class="lead">Some economic actions are naturally deferred: a card can be issued now, shared or stored, and exercised later by an intended recipient or eligible bearer.</p><pre class="ed-code"><code>authorize now
+   ↓
+portable / deferred instrument
+   ↓
+claim later
+   ↓
+funding succeeds
+   ↓
+Paycard state exists
+   ↓
+settlement</code></pre><p>The design problem is to preserve exact payment terms and replay safety across that delay without confusing “the payer signed this” with “the payer has already transferred funds.”</p></section>
+<section id="substrate"><div class="ed-section-kicker">02 / Existing EVM substrate</div><h2>Allowance, permit and payment authorization solve different problems.</h2><p>ERC-20 <code>approve</code> lets a spender withdraw tokens up to an allowance. ERC-2612 <code>permit</code> lets the owner modify that allowance through an EIP-712 signature instead of an onchain <code>approve</code> transaction.</p><p>RailsCard is not another token allowance standard. Its signed object carries payment-specific semantics—recipient mode, allocation, flow velocity, start, lifespan, recovery destination and Hub replay coordinates—and is later consumed by the OpenRails settlement contract.</p><div class="ed-compare"><div><strong>ERC-20 allowance</strong><p>How much may this spender withdraw from this token owner?</p></div><div><strong>ERC-2612 permit</strong><p>Can the owner update that allowance by signature?</p></div><div><strong>RailsCard</strong><p>What exact deferred payment authority did this payer issue, and under what claim/settlement terms?</p></div><div><strong>Paycard state</strong><p>What funded economic state actually exists after the claim succeeds?</p></div></div></section>
+<section id="shape"><div class="ed-section-kicker">03 / Construction</div><h2>The interface distinguishes bearer and recipient-bound authority.</h2><pre class="ed-code"><code>type RailsCard = {
+  variant: "bearer" | "recipient-bound";
+  claimPolicy?: "first-claimant" | "recipient-only";
+
+  paymentTerms: PaymentTerms;
+  proofPolicy: ProofPolicy;
+
+  intentRef?: IntentRef;
+  workspaceRef?: WorkspaceRef;
+  pathRef?: PathRef;
+  proposalRef?: ProposalRef;
+  pactRef?: PactRef;
+
+  settlementIntentRef?: SettlementIntentRef;
+  paycardRef?: PaycardStreamRef;
+
+  status:
+    | "DRAFT"
+    | "PREPARED"
+    | "AWAITING_AUTHORIZATION"
+    | "COMMITTED"
+    | "EXECUTING"
+    | "SETTLED"
+    | "FAILED"
+    | "CANCELLED"
+    | "EXPIRED";
+
+  signatureBinding: SignatureBinding;
+};</code></pre><p>A bearer card can sign a wildcard recipient and bind the actual claimant at claim time. A recipient-bound card commits to the intended recipient before the card is shared.</p></section>
+<section id="claim"><div class="ed-section-kicker">04 / Claim path</div><h2>The Hub verifies the signed economic terms before creating funded state.</h2><pre class="ed-code"><code>bytes32 structHash = keccak256(abi.encode(
+  ENVELOPE_TYPEHASH,
+  paycardId,
+  metadataHash,
+  signedRecipient,
+  totalAllocationPool,
+  flowVelocityPerSecond,
+  genesisTimestamp,
+  lifespanSeconds,
+  residualDeltaRecipient,
+  nonceChannel,
+  nonceValue
+));
+
+payer = recoverSigner(
+  keccak256("\x19\x01" || DOMAIN_SEPARATOR || structHash),
+  envelopeSignature
+);</code></pre><p>Only after signature recovery and replay consumption does the Hub attempt to pull funds:</p><pre class="ed-code"><code>_consumeNonce(payer, nonceChannel, nonceValue);
+_safeTransferFrom(
+  arcUsdc,
+  payer,
+  address(this),
+  totalAllocationPool
+);
+
+registry[paycardId] = PaycardRegistry(...);</code></pre><p>For bearer cards, the signed recipient can be zero while the claimant is stored as the eventual recipient. The payer therefore authorizes the bearer form deliberately rather than the contract silently dropping a recipient restriction.</p></section>
+<section id="funding"><div class="ed-section-kicker">05 / Authorization ≠ funding</div><h2>A valid RailsCard can still fail to become funded state.</h2><p class="lead">The signature proves authorization of the signed terms. It does not prove future balance, allowance, token behavior, or successful escrow at claim time.</p><pre class="ed-code"><code>valid signature
+   ≠
+funds already escrowed
+
+claim success requires:
+  valid signature
+  + unused replay coordinate
+  + valid time/state
+  + successful token transferFrom</code></pre><p>This distinction is important enough to preserve in product status. A deferred authorization should not be presented as financially completed merely because the signature exists.</p></section>
+<section id="lanes"><div class="ed-section-kicker">06 / Replay domains</div><h2>Deferral exposed a concurrency problem.</h2><p>When several RailsCards were signed before any were claimed, a shared sequential Hub nonce made those otherwise independent authorizations compete for the same replay slot.</p><pre class="ed-code"><code>// old pressure
+A -&gt; channel 0 / nonce 12
+B -&gt; channel 0 / nonce 12
+
+claim(B) -&gt; nonce 13
+claim(A) -&gt; invalid</code></pre><p>The follow-up Dynamic Authorization Lanes experiment allocates a fresh non-zero lane to each deferred card while reserving channel zero for immediate sequential opens.</p><p><a href="../dynamic-authorization-lanes/"><strong>Read Dynamic Authorization Lanes ↗</strong></a></p></section>
+<section id="boundary"><div class="ed-section-kicker">07 / Boundary</div><h2>RailsCard is a signed deferred payment authorization.</h2><p class="lead">It is not a token standard, not a prepaid balance by definition, and not evidence that escrow has already occurred.</p><p>Its usefulness comes from composing existing EVM mechanisms—typed signatures, contract-level replay protection and token transfer—with OpenRails-specific payment and relationship semantics.</p><pre class="ed-code"><code>signed authority
+≠ allowance
+≠ funded escrow
+≠ final settlement</code></pre></section>
+</article>
+<aside class="ed-aside"><div class="ed-aside-box"><h3>Variants</h3><ul><li>recipient-bound</li><li>bearer / first claimant</li><li>one-time terms</li><li>streaming terms</li></ul></div><div class="ed-aside-box"><h3>Cryptographic boundary</h3><p>The EIP-712 signature binds the payment terms. Replay protection and funding remain application/contract responsibilities.</p></div><div class="ed-aside-box"><h3>Primary references</h3><div class="ed-source-list"><a href="https://eips.ethereum.org/EIPS/eip-20">ERC-20 ↗</a><a href="https://eips.ethereum.org/EIPS/eip-2612">ERC-2612 Permit ↗</a><a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712 ↗</a><a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails source ↗</a></div></div></aside>
+</div>
+<div class="ed-shell ed-story-next"><a href="../dynamic-authorization-lanes/"><span>Derived concurrency experiment</span><strong>Dynamic Authorization Lanes ↗</strong></a></div>
+</main>
+<footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">RailsCard</div><small>P-005 / OpenRails / Deferred economic authority</small></div><div><a href="../../">Portfolio index</a><br><a href="../">Research archive</a></div><div><a href="../pact/">Previous: Pact ↗</a></div></div></footer>
+</body></html>
