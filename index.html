@@ -2,149 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Jason V — protocol engineer and systems researcher. Research, experiments, builds, and evidence across programmable economic relationships, confidential coordination, evidence systems, and autonomous agency.">
-  <title>Jason V — Research → Experiment → Build</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Jason V — protocol engineering and systems research. Research notes, experiments, projects and technical work across programmable relationships, autonomous systems, evidence and coordination.">
+  <title>Jason V — Systems Research & Protocol Engineering</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/editorial.css">
 </head>
-<body>
-<header class="site-header">
-  <div class="site-shell header-inner">
-    <a class="brand" href="./">JASON V <span>/ RESEARCH PRACTICE</span></a>
-    <nav class="nav" aria-label="Primary">
-      <a aria-current="page" href="./">Index</a>
-      <a href="research/">Research</a>
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-    </nav>
-  </div>
-</header>
+<body class="editorial">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Systems Research & Protocol Engineering</span><span>Research → Experiment → Build → Evidence</span></div></div>
+  <header class="ed-header">
+    <div class="ed-shell ed-header-row">
+      <a class="ed-mark" href="./">Jason V<small>Research practice / selected work</small></a>
+      <nav class="ed-nav" aria-label="Primary">
+        <a href="#research">Research</a>
+        <a href="#experiments">Experiments</a>
+        <a href="#projects">Projects</a>
+        <a href="#practice">Work &amp; Skills</a>
+        <a href="#about">About</a>
+      </nav>
+      <div class="ed-header-meta">Protocol engineering<br>Autonomous systems<br>Economic coordination</div>
+    </div>
+  </header>
 
-<main>
-  <section class="hero">
-    <div class="site-shell">
-      <div class="eyebrow">Protocol Engineering · Systems Research</div>
-      <div class="hero-grid">
+  <main>
+    <section class="ed-mast">
+      <div class="ed-shell ed-mast-grid">
         <div>
-          <h1>Research →<br>Experiment →<br>Build → Evidence.</h1>
-          <p class="hero-copy">I investigate how autonomous and economic systems can coordinate, remember, interpret evidence, and act without losing authority, provenance, or verifiability.</p>
+          <div class="ed-kicker">Vol. 01 / Research archive</div>
+          <h1>Working<br>systems,<br>as arguments.</h1>
         </div>
-        <div class="hero-meta">
-          Jason V<br>
-          Research practice<br>
-          Coordination / agency / evidence<br>
-          Selected systems only
+        <div class="ed-mast-intro">
+          <p>I investigate how autonomous and economic systems coordinate, delegate authority, interpret evidence, remember prior execution, and act without collapsing provenance or control.</p>
+          <p class="small">This archive is organized around technical questions and experiments rather than products. The code is evidence for an argument; failed hypotheses remain part of the record.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="site-shell method-strip" aria-label="Research method">
-    <div class="method-step"><span class="num">01</span><strong>Research</strong></div>
-    <div class="method-step"><span class="num">02</span><strong>Experiment</strong></div>
-    <div class="method-step"><span class="num">03</span><strong>Build</strong></div>
-    <div class="method-step"><span class="num">04</span><strong>Evidence</strong></div>
-  </div>
-
-  <section class="section" id="research">
-    <div class="site-shell">
-      <div class="section-heading">
-        <div class="section-label">Research directions</div>
-        <div class="section-title">The work is organized by the questions that produced it—not by chain, framework, or hackathon.</div>
-      </div>
-      <div class="research-list">
-        <a class="research-row" href="research/#economic-relationships">
-          <div class="index">01</div>
-          <div class="research-name">Programmable Economic Relationships</div>
-          <div class="research-question">What should exist between an agreement and a transaction?</div>
-          <div class="research-work">OpenRails<br>Concord</div>
+    <section class="ed-shell" id="research" aria-label="Featured research">
+      <div class="ed-edition">
+        <a class="ed-feature" href="research/2d-nonce-lanes/">
+          <div class="ed-feature-number">Featured research 01 / OpenRails</div>
+          <h2>2D Nonce Lanes</h2>
+          <p class="ed-feature-deck">What changes when replay protection is scoped to an account and an execution lane instead of one account-wide sequence?</p>
+          <p class="ed-feature-copy">A code-first investigation into Ethereum’s sequential account nonce, ERC-4337 keyed nonces, and OpenRails’ application-level <code>account × channel → sequence</code> model. The question is not whether one model is superior, but where independent ordering domains are useful.</p>
+          <div class="ed-feature-footer"><span>Implemented mechanism</span><span>Read story ↗</span></div>
         </a>
-        <a class="research-row" href="research/#confidential-coordination">
-          <div class="index">02</div>
-          <div class="research-name">Confidential &amp; Bounded Coordination</div>
-          <div class="research-question">Can independent actors coordinate private economic intent without surrendering authority or revealing every input?</div>
-          <div class="research-work">NOX ACCORD<br>Concord</div>
-        </a>
-        <a class="research-row" href="research/#evidence-judgment">
-          <div class="index">03</div>
-          <div class="research-name">Evidence, Judgment &amp; Economic Understanding</div>
-          <div class="research-question">How should software move from observing reality to acting on an interpretation of it?</div>
-          <div class="research-work">RJP<br>Noema</div>
-        </a>
-        <a class="research-row" href="research/#memory-agency">
-          <div class="index">04</div>
-          <div class="research-name">Memory &amp; Autonomous Agency</div>
-          <div class="research-question">How can autonomous systems improve from experience without silently surrendering decision authority to memory?</div>
-          <div class="research-work">Engram<br>Thinking Reed</div>
+        <a class="ed-feature" href="research/dynamic-authorization-lanes/">
+          <div class="ed-feature-number">Featured research 02 / RailsCard</div>
+          <h2>Dynamic Authorization Lanes</h2>
+          <p class="ed-feature-deck">When a nonce lane stops meaning “execution queue” and starts identifying one independently exercisable authorization.</p>
+          <p class="ed-feature-copy">Deferred RailsCards exposed a specific failure: two valid pre-signed authorizations could invalidate one another when they shared a sequential lane. The resulting design allocates a fresh replay domain to each outstanding authorization.</p>
+          <div class="ed-feature-footer"><span>Merged + test-covered</span><span>Read story ↗</span></div>
         </a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section">
-    <div class="site-shell atlas">
-      <div class="atlas-copy">
-        <div class="section-label">Research map</div>
-        <h2 class="section-title" style="margin-top:20px">Different builds. Recurring primitives.</h2>
-        <p>The projects overlap because the questions overlap: authority, evidence, privacy, persistent state, bounded action, and the difference between what a system observes and what it is allowed to conclude.</p>
-        <a class="repo-link" href="research/">Open the research index <span class="arrow">↗</span></a>
-      </div>
-      <svg class="atlas-svg" viewBox="0 0 720 500" role="img" aria-label="Map linking four research directions through recurring primitives">
-        <defs>
-          <style>
-            .gline{stroke:#454740;stroke-width:1;fill:none}.gline2{stroke:#c8a56a;stroke-width:1.2;fill:none;stroke-dasharray:3 6}.node{fill:#121313;stroke:#454740;stroke-width:1}.tiny{font:11px ui-monospace,monospace;fill:#8e8d87;letter-spacing:.05em}.title{font:18px Georgia,serif;fill:#f0efe9}.accent{fill:#c8a56a}
-          </style>
-        </defs>
-        <path class="gline" d="M170 122 C300 80 430 80 550 125"/>
-        <path class="gline" d="M170 122 C220 245 220 300 170 380"/>
-        <path class="gline" d="M550 125 C500 245 500 300 550 380"/>
-        <path class="gline" d="M170 380 C300 420 430 420 550 380"/>
-        <path class="gline2" d="M170 122 C330 250 390 250 550 380"/>
-        <path class="gline2" d="M550 125 C400 230 300 280 170 380"/>
-        <circle cx="360" cy="250" r="55" class="node"/>
-        <text x="360" y="240" text-anchor="middle" class="tiny">RECURRING</text>
-        <text x="360" y="258" text-anchor="middle" class="tiny accent">PRIMITIVES</text>
-        <g transform="translate(55,73)"><rect width="230" height="98" rx="2" class="node"/><text x="16" y="28" class="tiny accent">01</text><text x="16" y="56" class="title">Economic relationships</text><text x="16" y="77" class="tiny">authority · settlement · receipts</text></g>
-        <g transform="translate(435,76)"><rect width="230" height="98" rx="2" class="node"/><text x="16" y="28" class="tiny accent">02</text><text x="16" y="56" class="title">Confidential coordination</text><text x="16" y="77" class="tiny">privacy · selection · bounds</text></g>
-        <g transform="translate(55,330)"><rect width="230" height="98" rx="2" class="node"/><text x="16" y="28" class="tiny accent">03</text><text x="16" y="56" class="title">Evidence &amp; judgment</text><text x="16" y="77" class="tiny">claims · inference · authority</text></g>
-        <g transform="translate(435,330)"><rect width="230" height="98" rx="2" class="node"/><text x="16" y="28" class="tiny accent">04</text><text x="16" y="56" class="title">Memory &amp; agency</text><text x="16" y="77" class="tiny">history · influence · provenance</text></g>
-      </svg>
-    </div>
-  </section>
-
-  <section class="section" id="work">
-    <div class="site-shell">
-      <div class="section-heading">
-        <div class="section-label">Selected investigations</div>
-        <div class="section-title">Seven systems, presented as artifacts of research rather than a catalogue of applications.</div>
-      </div>
-      <div class="work-grid">
-        <a class="work-card" href="work/openrails/"><div class="work-top"><span class="index">01</span><span class="status">Public build</span></div><div class="work-name">OpenRails</div><p class="work-copy">A persistent commercial lifecycle connecting bounded authority, agreement, proof, USDC settlement, and receipts.</p><div class="work-direction">Programmable Economic Relationships <span class="arrow">↗</span></div></a>
-        <a class="work-card" href="work/nox-accord/"><div class="work-top"><span class="index">02</span><span class="status">Research build</span></div><div class="work-name">NOX ACCORD</div><p class="work-copy">A privacy-preserving coordination experiment for private inputs, confidential comparison, bounded allocation, and selective disclosure.</p><div class="work-direction">Confidential &amp; Bounded Coordination <span class="arrow">↗</span></div></a>
-        <a class="work-card" href="work/concord/"><div class="work-top"><span class="index">03</span><span class="status">Testnet evidence</span></div><div class="work-name">Concord</div><p class="work-copy">A confidential programmable relationship system for coordinating capital between independent parties.</p><div class="work-direction">Economic Relationships · Confidential Coordination <span class="arrow">↗</span></div></a>
-        <a class="work-card" href="work/rjp/"><div class="work-top"><span class="index">04</span><span class="status">Live testnet system</span></div><div class="work-name">RJP</div><p class="work-copy">A bounded judgment layer that turns reproducible onchain evidence into revisioned judgments downstream systems can actually use.</p><div class="work-direction">Evidence, Judgment &amp; Economic Understanding <span class="arrow">↗</span></div></a>
-        <a class="work-card" href="work/noema/"><div class="work-top"><span class="index">05</span><span class="status">Foundation</span></div><div class="work-name">Noema</div><p class="work-copy">Verifiable economic intelligence built around versioned, evidence-bounded economic objects.</p><div class="work-direction">Evidence, Judgment &amp; Economic Understanding <span class="arrow">↗</span></div></a>
-        <a class="work-card" href="work/engram/"><div class="work-top"><span class="index">06</span><span class="status">Tested system</span></div><div class="work-name">Engram</div><p class="work-copy">Execution-memory infrastructure that tests whether prior experience causally changes later autonomous behavior.</p><div class="work-direction">Memory &amp; Autonomous Agency <span class="arrow">↗</span></div></a>
-        <a class="work-card" href="work/thinking-reed/"><div class="work-top"><span class="index">07</span><span class="status">Research system</span></div><div class="work-name">Thinking Reed</div><p class="work-copy">A persistent human–AI cognition and production system connecting thought, evidence, decisions, execution, and observed reality.</p><div class="work-direction">Memory &amp; Autonomous Agency <span class="arrow">↗</span></div></a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="about">
-    <div class="site-shell">
-      <div class="section-heading">
-        <div class="section-label">About the practice</div>
-        <div>
-          <div class="section-title">The unit of work is a question that survives implementation.</div>
-          <p class="hero-copy" style="margin-top:28px;font-size:21px">I use protocols, smart contracts, confidential computation, agent systems, APIs, SDKs, MCP surfaces, testnets, benchmarks, and controlled experiments as ways to interrogate systems questions. A build belongs here when it clarifies the research—not simply because it shipped.</p>
+    <section class="ed-section" id="experiments">
+      <div class="ed-shell">
+        <div class="ed-section-head"><div class="ed-section-kicker">Research ledger</div><h2 class="ed-section-title">Questions that became mechanisms.</h2></div>
+        <div class="ed-ledger">
+          <a class="ed-ledger-row" href="research/programmable-relationship/"><div class="ed-ledger-id">P-001</div><div class="ed-ledger-name">Programmable Relationship</div><div class="ed-ledger-q">What if the durable computational object governing economic activity were the relationship rather than the isolated transaction?</div><div class="ed-ledger-state">Research note<br>OpenRails / Concord</div></a>
+          <a class="ed-ledger-row" href="research/workspace/"><div class="ed-ledger-id">P-002</div><div class="ed-ledger-name">Workspace</div><div class="ed-ledger-q">Where should persistent economic authority live when humans, applications, services and agents share one continuing activity?</div><div class="ed-ledger-state">Implemented<br>OpenRails runtime</div></a>
+          <div class="ed-ledger-row"><div class="ed-ledger-id">P-003</div><div class="ed-ledger-name">Path</div><div class="ed-ledger-q">How can an actor repeatedly exercise delegated authority without receiving unrestricted custody?</div><div class="ed-ledger-state">Drafting<br>OpenRails</div></div>
+          <div class="ed-ledger-row"><div class="ed-ledger-id">P-004</div><div class="ed-ledger-name">Pact</div><div class="ed-ledger-q">Where should permission end and accepted economic commitment begin?</div><div class="ed-ledger-state">Drafting<br>OpenRails</div></div>
+          <div class="ed-ledger-row"><div class="ed-ledger-id">P-008</div><div class="ed-ledger-name">Gaia Case</div><div class="ed-ledger-q">How should disputes, exceptions and reconciliation remain inside the relationship that produced them?</div><div class="ed-ledger-state">Interface-defined<br>OpenRails</div></div>
+          <div class="ed-ledger-row"><div class="ed-ledger-id">E-REACTOR</div><div class="ed-ledger-name">Reactor</div><div class="ed-ledger-q">How should persistent objectives react to changing authenticated state without continuously replaying stale transactions?</div><div class="ed-ledger-state">Experimental series<br>Falsification included</div></div>
         </div>
       </div>
-    </div>
-  </section>
-</main>
+    </section>
 
-<footer class="footer"><div class="site-shell footer-grid"><span>Jason V / Research Practice</span><span>Research → Experiment → Build → Evidence</span></div></footer>
-<script src="assets/site.js"></script>
+    <section class="ed-section" id="projects">
+      <div class="ed-shell">
+        <div class="ed-section-head"><div class="ed-section-kicker">Selected systems</div><h2 class="ed-section-title">Projects as experimental apparatus.</h2></div>
+        <div class="ed-project-grid">
+          <a class="ed-project" href="work/openrails/"><div class="ed-project-meta">01 / OpenRails / Public build</div><h3 class="ed-project-title">OpenRails</h3><p>Persistent commercial coordination: Workspace, bounded Paths, Pacts, proof, RailsCard, settlement and receipts.</p><div class="ed-project-link">Open investigation ↗</div></a>
+          <a class="ed-project" href="work/concord/"><div class="ed-project-meta">02 / Concord / Testnet evidence</div><h3 class="ed-project-title">Concord</h3><p>Confidential programmable capital relationships with Root/Child Accords, bounded sessions, composed capacity and lineage.</p><div class="ed-project-link">Open investigation ↗</div></a>
+          <a class="ed-project" href="work/nox-accord/"><div class="ed-project-meta">03 / NOX ACCORD / Research build</div><h3 class="ed-project-title">NOX ACCORD</h3><p>Private comparison and bounded allocation without requiring participants to reveal every economic input.</p><div class="ed-project-link">Open investigation ↗</div></a>
+          <a class="ed-project" href="work/rjp/"><div class="ed-project-meta">04 / RJP / Judgment</div><h3 class="ed-project-title">RJP</h3><p>Observed behavior → reproducible evidence → domain-scoped, revisioned judgment → local downstream decision.</p><div class="ed-project-link">Open investigation ↗</div></a>
+          <a class="ed-project" href="work/noema/"><div class="ed-project-meta">05 / Noema / Foundation</div><h3 class="ed-project-title">Noema</h3><p>Evidence-bounded economic objects for turning fragmented state into inspectable economic understanding.</p><div class="ed-project-link">Open investigation ↗</div></a>
+          <a class="ed-project" href="work/engram/"><div class="ed-project-meta">06 / Engram / Tested system</div><h3 class="ed-project-title">Engram</h3><p>Execution memory that asks whether prior experience causally changed a later autonomous decision.</p><div class="ed-project-link">Open investigation ↗</div></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="ed-section" id="practice">
+      <div class="ed-shell ed-practice">
+        <div><div class="ed-section-kicker">Work &amp; skills</div><p class="ed-practice-copy">I work where protocol semantics, state machines, cryptographic authorization, autonomous execution and evidence systems meet.</p></div>
+        <div class="ed-skills">
+          <div class="ed-skill"><strong>Protocol design</strong>State machines, authority boundaries, lifecycle semantics, replay protection.</div>
+          <div class="ed-skill"><strong>Smart contracts</strong>EVM/Solidity, typed signatures, settlement, escrow, onchain verification.</div>
+          <div class="ed-skill"><strong>Agent systems</strong>Bounded autonomy, MCP/API surfaces, execution memory, orchestration.</div>
+          <div class="ed-skill"><strong>Evidence systems</strong>Provenance, canonicalization, claims, judgments, reproducible verification.</div>
+          <div class="ed-skill"><strong>Confidential coordination</strong>Private computation, selective disclosure, bounded outputs.</div>
+          <div class="ed-skill"><strong>Experimental engineering</strong>Benchmarks, adversarial tests, negative results, testnet evidence.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ed-section" id="about">
+      <div class="ed-shell ed-practice">
+        <div><div class="ed-section-kicker">About</div><p class="ed-practice-copy">The unit of work is a question that survives implementation.</p></div>
+        <div><p>I use working systems to test claims about coordination, authority, evidence and autonomy. A result belongs here when the mechanism is inspectable and the boundary of the claim is explicit.</p><p>Research stories compare the mechanism against its actual substrate and established alternatives. A difference is not automatically an improvement; the point is to identify the conditions under which the construction is useful and what it costs.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Jason V</div><small>Systems research through working infrastructure.</small></div><div><small>Archive</small><br><a href="research/">Research index</a><br><a href="#projects">Projects</a><br><a href="#practice">Work &amp; skills</a></div><div><small>Method</small><br><a href="#research">Research</a><br><a href="#experiments">Experiment</a><br><a href="#projects">Build / evidence</a></div></div></footer>
 </body>
 </html>
