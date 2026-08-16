@@ -1,0 +1,93 @@
+/* Responsive and reading-flow corrections after screenshot review. */
+
+/* Long editorial statements should never be trapped in a narrow label column. */
+.ed-practice{
+  display:block;
+}
+
+.ed-practice > div:first-child{
+  max-width:1050px;
+}
+
+.ed-practice-copy{
+  max-width:1000px;
+  margin:0 0 52px;
+  font-size:clamp(40px,5.3vw,76px);
+  line-height:.99;
+  letter-spacing:-.042em;
+}
+
+.ed-practice > div:nth-child(2){
+  width:min(100%,920px);
+  margin-left:auto;
+}
+
+.ed-skills{
+  width:100%;
+}
+
+.ed-skill{
+  grid-template-columns:minmax(180px,240px) minmax(0,1fr);
+  align-items:start;
+}
+
+/* About uses the same structure, but should read as a short essay rather than a two-column poster. */
+#about .ed-practice > div:nth-child(2){
+  width:min(100%,780px);
+}
+
+#about .ed-practice-copy{
+  max-width:850px;
+}
+
+/* Intermediate/tablet widths were the failure point in the screenshot. Collapse early. */
+@media(max-width:1180px){
+  .ed-practice{
+    display:block !important;
+  }
+
+  .ed-practice-copy{
+    max-width:900px;
+    margin-bottom:42px;
+    font-size:clamp(38px,6vw,64px);
+  }
+
+  .ed-practice > div:nth-child(2){
+    width:100%;
+    max-width:none;
+    margin-left:0;
+  }
+
+  .ed-skill{
+    grid-template-columns:minmax(190px,230px) minmax(0,1fr);
+  }
+}
+
+@media(max-width:760px){
+  .ed-practice-copy{
+    font-size:clamp(35px,11vw,52px);
+    line-height:1.01;
+    margin-bottom:34px;
+  }
+
+  .ed-skill{
+    display:block;
+    padding:17px 0 18px;
+  }
+
+  .ed-skill strong{
+    display:block;
+    margin-bottom:5px;
+  }
+
+  /* Keep research reading surfaces genuinely full-width on phones. */
+  .ed-story-main p,
+  .ed-story-main .lead{
+    max-width:100%;
+  }
+
+  .ed-model,
+  .ed-code{
+    max-width:100%;
+  }
+}
