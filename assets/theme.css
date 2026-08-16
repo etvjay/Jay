@@ -13,6 +13,19 @@ html[data-theme="light"]{
   color-scheme:light;
 }
 
+@media(prefers-color-scheme:dark){
+  html:not([data-theme]){
+    --paper:#11120f;
+    --paper-2:#181915;
+    --ink:#ece9df;
+    --muted:#a9a79f;
+    --rule:#3e4038;
+    --rule-soft:#292b26;
+    --accent:#92aa8d;
+    color-scheme:dark;
+  }
+}
+
 html[data-theme="dark"],
 html[data-theme="dark"] body.editorial{
   background:var(--paper);
@@ -45,6 +58,36 @@ html[data-theme="dark"] .ed-footer{
 html[data-theme="dark"] .ed-footer small,
 html[data-theme="dark"] .ed-footer a{
   color:#aaa89f;
+}
+
+@media(prefers-color-scheme:dark){
+  html:not([data-theme]) body.editorial{
+    background:var(--paper);
+    color:var(--ink);
+  }
+
+  html:not([data-theme]) .ed-header{
+    background:rgba(17,18,15,.97);
+  }
+
+  html:not([data-theme]) .ed-ledger-q,
+  html:not([data-theme]) .ed-feature-copy,
+  html:not([data-theme]) .ed-project p,
+  html:not([data-theme]) .ed-skill,
+  html:not([data-theme]) .ed-aside-box p,
+  html:not([data-theme]) .ed-aside-box li,
+  html:not([data-theme]) .ed-model p{
+    color:#bbb9b0;
+  }
+
+  html:not([data-theme]) .ed-code{
+    background:#080907;
+    color:#ece9df;
+  }
+
+  html:not([data-theme]) .ed-footer{
+    background:#080907;
+  }
 }
 
 .theme-toggle{
