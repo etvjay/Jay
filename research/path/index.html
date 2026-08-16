@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A code-first research story on OpenRails Path: persistent bounded delegation for agents and services, compared carefully with EVM signatures, ERC-20 allowances and smart-account validation.">
+  <title>Path — Persistent Bounded Delegation — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/editorial.css">
+</head>
+<body class="editorial ed-story">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Experiment 01 / P-003</span><span>OpenRails / Delegation / Authority bounds</span></div></div>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice / selected work</small></a><nav class="ed-nav"><a aria-current="page" href="../">Research</a><a href="../../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#practice">Work &amp; Skills</a><a href="../../#about">About</a></nav><div class="ed-header-meta">P-003 / Path<br>Implemented runtime primitive</div></div></header>
+
+  <main>
+    <section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Experiment 01<br>P-003<br>OpenRails<br>Persistent bounded delegation</div><div><h1>Path</h1><p class="ed-story-deck">How can an actor repeatedly exercise another party’s economic authority without receiving unrestricted custody?</p><div class="ed-statusline"><span>Implemented</span><span>EIP-712 signed authority</span><span>Runtime enforced</span><span>Revocable</span></div></div></div></section>
+
+    <div class="ed-shell ed-story-body">
+      <aside class="ed-story-toc"><a href="#pressure">Pressure</a><a href="#substrate">EVM substrate</a><a href="#shape">Path shape</a><a href="#enforcement">Runtime enforcement</a><a href="#allows">What it allows</a><a href="#tradeoffs">Trade-offs</a><a href="#boundary">Boundary</a></aside>
+
+      <article class="ed-story-main">
+        <section id="pressure"><div class="ed-section-kicker">01 / Pressure</div><h2>Repeated autonomy creates an authority problem.</h2><p class="lead">A service or agent may need to perform many economic actions. Asking the principal to re-authorize every action preserves control but removes useful autonomy. Giving the actor an unrestricted key preserves autonomy but expands the blast radius.</p><pre class="ed-code"><code>// repeated explicit approval
+request 1 -&gt; principal signs
+request 2 -&gt; principal signs
+request 3 -&gt; principal signs
+
+// unrestricted custody
+agent gets wallet authority
+agent can act outside the intended objective</code></pre><p>Path explores a middle object: establish a bounded delegation once, then evaluate subsequent actions against that persistent authority.</p></section>
+
+        <section id="substrate"><div class="ed-section-kicker">02 / Existing EVM substrate</div><h2>A signature, an allowance and a delegation are not the same thing.</h2><p>EIP-712 gives applications a standard way to sign typed structured data. It does not define what authority the signed object should represent, nor does it provide replay protection by itself.</p><p>ERC-20 <code>approve</code> gives a spender an amount-denominated token allowance. That is useful token-level authority, but it does not natively encode a business purpose, transaction frequency, stream velocity, workspace identity, or a broader economic lifecycle.</p><p>ERC-4337 smart accounts can implement custom validation logic for <code>UserOperation</code>s. Path does not replace that account-level validation. It sits at a different semantic layer: an OpenRails Runtime decides whether an economic proposal is permitted by an application-level delegation before later wallet or settlement execution.</p><div class="ed-compare"><div><strong>ERC-20 allowance</strong><p>“spender may withdraw up to this token amount.”</p></div><div><strong>OpenRails Path</strong><p>“this delegate may perform these capabilities, on these resources, under these quantitative and temporal bounds.”</p></div></div></section>
+
+        <section id="shape"><div class="ed-section-kicker">03 / Construction</div><h2>The delegation is a first-class object.</h2><pre class="ed-code"><code>type Path = {
+  workspaceRef: WorkspaceRef;
+  issuerActorRef: ActorRef;
+  delegateActorRef: ActorRef;
+
+  capabilities: string[];
+  resourceRefs?: PathResourceRef[];
+  limits: PathLimit[];
+
+  status:
+    | "PREPARED"
+    | "ACTIVE"
+    | "REVOKED"
+    | "EXPIRED";
+
+  signatureBinding: SignatureBinding;
+  provenance: Provenance;
+};</code></pre><p>Each asset limit can express more than one ceiling:</p><pre class="ed-code"><code>type PathLimit = {
+  asset: Asset;
+
+  maxAmount: string;
+  maxAmountPerTransaction?: string;
+
+  maxTransactionsPerPeriod: string;
+  periodSeconds: string;
+
+  maxVelocityPerSecond?: string;
+  maxLifespanSeconds?: string;
+};</code></pre><p>The important distinction is that these fields describe the authority relationship itself. They are not inferred after an action is submitted.</p></section>
+
+        <section id="enforcement"><div class="ed-section-kicker">04 / Runtime enforcement</div><h2>The Workspace authority must activate and can revoke the Path.</h2><pre class="ed-code"><code>const workspace = requireWorkspace(state, path.workspaceRef.id);
+const authority = requireWorkspaceAuthority(state, workspace.id);
+const issuer = requireActor(state, path.issuerActorRef.id);
+const delegate = requireActor(state, path.delegateActorRef.id);
+
+if (path.status !== "PREPARED") {
+  throw new RuntimeError("STATE_STALE", ...);
+}
+
+if (!issuer.walletAddress ||
+    issuer.walletAddress !== authority ||
+    binding.signer !== authority) {
+  throw new RuntimeError(
+    "AUTHORIZATION_REQUIRED",
+    "Path activation signer is not the Workspace authority."
+  );
+}</code></pre><p>Once active, proposals are checked against the applicable limits. A single transaction can be blocked for exceeding the per-transaction or overall limit:</p><pre class="ed-code"><code>if (amount &gt; limit.maxAmount) {
+  throw POLICY_BLOCKED;
+}
+
+if (limit.maxAmountPerTransaction !== undefined &amp;&amp;
+    amount &gt; limit.maxAmountPerTransaction) {
+  throw POLICY_BLOCKED;
+}</code></pre><p>Streamed settlement adds velocity and lifespan constraints:</p><pre class="ed-code"><code>if (terms.settlementShape === "streamed") {
+  if (velocity &gt; limit.maxVelocityPerSecond) {
+    throw POLICY_BLOCKED;
+  }
+
+  if (lifespan &gt; limit.maxLifespanSeconds) {
+    throw POLICY_BLOCKED;
+  }
+}</code></pre><p>The Runtime also keeps period usage. Transaction count and cumulative amount are advanced in a bounded bucket:</p><pre class="ed-code"><code>nextCount = usage.transactionCount + 1;
+nextAmount = usage.amount + terms.amount;
+
+if (nextCount &gt; limit.maxTransactionsPerPeriod) {
+  throw POLICY_BLOCKED;
+}
+
+if (nextAmount &gt; limit.maxAmount) {
+  throw POLICY_BLOCKED;
+}</code></pre><p>When evaluation fails, the resulting decision records <code>PATH_LIMIT_EXCEEDED</code> and explicitly states that no wallet action, Paycard creation, or value movement occurred.</p></section>
+
+        <section id="allows"><div class="ed-section-kicker">05 / What it allows</div><h2>Repeatable authority without unrestricted possession.</h2><pre class="ed-code"><code>treasury
+   |
+   | activates once
+   v
+Path
+├── delegate = agent-7
+├── capability = PAY
+├── USDC max = 10,000
+├── tx max = 250
+├── tx / hour = 100
+├── velocity bound
+├── lifespan bound
+└── revocable
+   |
+   ├── action
+   ├── action
+   ├── action
+   └── action</code></pre><p>The principal does not have to reconstruct the same delegation for every request, while the delegate still cannot treat “I was authorized once” as unlimited future authority.</p><p>This becomes especially useful when agents operate continuously: authority can persist longer than one action while remaining narrower than ownership of the underlying wallet.</p></section>
+
+        <section id="tradeoffs"><div class="ed-section-kicker">06 / Trade-offs</div><h2>The runtime becomes part of the trust and availability boundary.</h2><p>Path limits only matter if every delegated proposal that depends on them actually passes through the enforcing Runtime. A parallel execution route that bypasses the Path is outside this guarantee.</p><p>Period buckets, resource references, status transitions, authenticated ingestion and provenance also add state and implementation complexity. A simple ERC-20 allowance may be preferable when the only intended policy really is “spender may move at most X tokens.”</p><div class="ed-compare"><div><strong>Path is stronger when</strong><p>authority needs purpose, capability, frequency, streaming or lifecycle bounds across many actions.</p></div><div><strong>Simpler primitives are stronger when</strong><p>the policy is only a token amount ceiling and extra runtime semantics would add little value.</p></div></div></section>
+
+        <section id="boundary"><div class="ed-section-kicker">07 / Terminology boundary</div><h2>Path is application-level delegated authority.</h2><p class="lead">It is not a new EVM permission primitive, not an ERC-20 replacement, and not itself a smart-account validation standard.</p><p>The most accurate description is a <strong>persistent bounded delegation object</strong> enforced by the OpenRails Runtime. EIP-712 provides the typed-signature substrate; wallet/account systems remain responsible for cryptographic execution authority; settlement contracts remain authoritative for actual value movement.</p><pre class="ed-code"><code>Path answers:
+"What may this delegate repeatedly do?"
+
+Pact answers next:
+"What specific economic commitment was actually accepted?"</code></pre></section>
+      </article>
+
+      <aside class="ed-aside">
+        <div class="ed-aside-box"><h3>Core fields</h3><ul><li>issuer</li><li>delegate</li><li>capabilities</li><li>resources</li><li>amount ceilings</li><li>period/frequency</li><li>velocity</li><li>lifespan</li><li>revocation state</li></ul></div>
+        <div class="ed-aside-box"><h3>Failure behavior</h3><p>A proposal outside the Path produces a blocked decision with no financial effect rather than silently narrowing the request.</p></div>
+        <div class="ed-aside-box"><h3>Primary references</h3><div class="ed-source-list"><a href="https://eips.ethereum.org/EIPS/eip-20">ERC-20 allowance ↗</a><a href="https://eips.ethereum.org/EIPS/eip-712">EIP-712 typed signing ↗</a><a href="https://eips.ethereum.org/EIPS/eip-4337">ERC-4337 account validation ↗</a><a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails source ↗</a></div></div>
+      </aside>
+    </div>
+
+    <div class="ed-shell ed-story-next"><a href="../pact/"><span>Next primitive</span><strong>Pact — Accepted Economic Commitment ↗</strong></a></div>
+  </main>
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Path</div><small>P-003 / OpenRails / Persistent bounded delegation</small></div><div><a href="../../">Portfolio index</a><br><a href="../">Research archive</a></div><div><a href="../workspace/">Previous: Workspace ↗</a></div></div></footer>
+</body>
+</html>
