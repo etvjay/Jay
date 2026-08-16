@@ -3,24 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A code-first research story on OpenRails 2D nonce lanes, Ethereum account nonces, ERC-4337 keyed nonces, and application-level replay domains.">
+  <meta name="description" content="A code-first research story on OpenRails 2D nonce lanes, Ethereum transaction nonces, ERC-4337 keyed nonces, and application-level replay domains.">
   <title>2D Nonce Lanes — Jason V</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../assets/editorial.css">
 </head>
 <body class="editorial ed-story">
   <div class="ed-topline"><div class="ed-shell"><span>Jason V / Protocol Engineering &amp; Systems Research</span><span>Research → Experiment → Build → Evidence</span></div></div>
-  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice</small></a><nav class="ed-nav" aria-label="Primary"><a aria-current="page" href="../">Research</a><a href="../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#work">Work</a><a href="../../#skills">Skills</a></nav><div class="ed-header-meta">Featured research<br>OpenRails / replay protection</div></div></header>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice</small></a><nav class="ed-nav" aria-label="Primary"><a aria-current="page" href="../">Research</a><a href="../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#practice">Work &amp; Skills</a><a href="../../#about">About</a></nav><div class="ed-header-meta">Featured research<br>OpenRails / replay protection</div></div></header>
 
   <main>
-    <section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Featured Research 01<br>E-001<br>OpenRails<br>Code-first note</div><div><div class="ed-kicker">Replay protection / concurrency</div><h1>2D Nonce Lanes</h1><p class="ed-story-deck">What changes when replay protection is scoped to <em>(account, lane)</em> rather than one globally ordered sequence?</p><div class="ed-statusline"><span>Implemented</span><span>EVM application layer</span><span>Not an Ethereum replacement</span></div></div></div></section>
+    <section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Featured Research 01<br>E-001<br>OpenRails<br>Application-level nonce domains</div><div><div class="ed-kicker">Replay protection / ordering</div><h1>2D Nonce Lanes</h1><p class="ed-story-deck">A study of what changes when replay protection is scoped to an account and a lane instead of one account-wide application sequence.</p><div class="ed-statusline"><span>Implemented</span><span>EVM application layer</span><span>Comparative model</span></div></div></div></section>
 
     <div class="ed-shell ed-story-body">
-      <aside class="ed-story-toc"><a href="#existing">Existing substrate</a><a href="#construction">Construction</a><a href="#benefit">Why it helps</a><a href="#tradeoffs">Trade-offs</a><a href="#boundary">What it is not</a></aside>
-      <article class="ed-story-main">
-        <section id="existing"><div class="ed-section-kicker">01 / Existing substrate</div><h2>Ethereum already has ordering.</h2><p class="lead">An ordinary Ethereum account transaction nonce gives one signer one sequential ordering domain. That is useful precisely because it is simple: transactions from the same account cannot be replayed or arbitrarily reordered.</p><p>OpenRails does not replace that transaction nonce. The Hub adds a separate, contract-level replay domain for signed payment intents whose lifecycle can outlive the transaction that eventually submits them.</p><div class="ed-compare"><div><strong>Ethereum transaction nonce</strong><p>Protocol-level ordering for transactions from an account.</p></div><div><strong>OpenRails Hub nonce</strong><p>Application-level replay protection for signed economic authorizations consumed by a contract.</p></div></div><p>ERC-4337 also supports keyed nonce sequences, commonly described as a two-dimensional nonce model: a key selects a nonce domain and a sequence orders operations within that domain. The important point is therefore not that OpenRails discovered keyed nonces; it is what the application chooses those lanes to represent.</p></section>
+      <aside class="ed-story-toc"><a href="#substrate">Substrate</a><a href="#model">Model</a><a href="#implementation">Implementation</a><a href="#execution">Execution</a><a href="#limits">Limits</a><a href="#next">Derived question</a></aside>
 
-        <section id="construction"><div class="ed-section-kicker">02 / Construction</div><h2>The contract state is small.</h2><pre class="ed-code"><code>mapping(address =&gt; mapping(uint256 =&gt; uint256))
+      <article class="ed-story-main">
+        <section id="substrate">
+          <div class="ed-section-kicker">01 / Existing substrate</div>
+          <h2>The first nonce already exists below us.</h2>
+          <p class="lead">Ethereum accounts already carry transaction nonces. Their job is protocol-level ordering and replay protection for transactions sent from an account. OpenRails does not replace or modify that mechanism.</p>
+          <p>A signed OpenRails payment authorization can exist before the transaction that eventually submits it. That creates a second replay problem at the application layer: the contract needs to know whether a particular signed authorization has already been consumed.</p>
+          <p>ERC-4337 also provides keyed nonce sequences for smart-account operations. The useful comparison is therefore not “one-dimensional Ethereum versus two-dimensional OpenRails.” Ethereum account transactions, ERC-4337 user operations, and OpenRails payment authorizations sit at different layers and protect different objects.</p>
+
+          <div class="ed-model">
+            <div class="ed-model-label">Layer model</div>
+            <pre>Ethereum account
+    transaction nonce
+        │
+        └── orders protocol transactions from an account
+
+ERC-4337 smart account
+    nonce key + sequence
+        │
+        └── orders UserOperations inside account-defined nonce domains
+
+OpenRails Hub
+    signer + channel + sequence
+        │
+        └── consumes signed payment authorizations at the application layer</pre>
+          </div>
+        </section>
+
+        <section id="model">
+          <div class="ed-section-kicker">02 / Model</div>
+          <h2>The state is a map of independent sequences.</h2>
+          <p>Instead of one application counter per signer, OpenRails stores one counter for each signer and channel pair.</p>
+
+          <div class="ed-model">
+            <div class="ed-model-label">State model</div>
+            <pre>N[account][channel] = next expected application nonce
+
+Account A
+    lane 0   → 17
+    lane 1   →  4
+    lane 7   → 92
+
+Account B
+    lane 0   →  3
+    lane 7   → 11</pre>
+            <p>Executing an authorization in `A / lane 7` changes only that sequence. It does not advance `A / lane 0`, `A / lane 1`, or any lane owned by Account B.</p>
+          </div>
+
+          <p>This is the basic concurrency property. Whether it is useful depends entirely on what the application chooses a lane to mean.</p>
+        </section>
+
+        <section id="implementation">
+          <div class="ed-section-kicker">03 / Implementation</div>
+          <h2>The Solidity mechanism is deliberately small.</h2>
+
+          <pre class="ed-code"><code>mapping(address =&gt; mapping(uint256 =&gt; uint256))
     public accountNonceTracks;
 
 function _consumeNonce(
@@ -34,40 +86,99 @@ function _consumeNonce(
     );
 
     accountNonceTracks[account][channel] = expectedNonce + 1;
-}</code></pre><p>The state key is effectively:</p><pre class="ed-code"><code>(signer, channel) -&gt; nextExpectedNonce</code></pre><p>The signed OpenRails settlement intent includes both `nonceChannel` and `nonceValue`, so a relayer cannot move a valid authorization to another lane without changing the signed message.</p><pre class="ed-code"><code>SettlementIntent(
-  ...,
+}</code></pre>
+
+          <p>The lane and sequence are part of the EIP-712 settlement intent itself.</p>
+
+          <pre class="ed-code"><code>SettlementIntent(
+  bytes32 paycardId,
+  bytes32 metadataHash,
+  address recipient,
+  uint256 totalAllocationPool,
+  uint256 flowVelocityPerSecond,
+  uint256 genesisTimestamp,
+  uint256 lifespanSeconds,
+  address residualDeltaRecipient,
   uint256 nonceChannel,
   uint256 nonceValue
-)</code></pre><p>Execution therefore consumes only the referenced lane:</p><pre class="ed-code"><code>payer = recoverSigner(signedIntent);
-_consumeNonce(payer, nonceChannel, nonceValue);
-transferFrom(payer, hub, allocation);</code></pre></section>
+)</code></pre>
 
-        <section id="benefit"><div class="ed-section-kicker">03 / Why it helps here</div><h2>Independent workloads stop contending on one sequence.</h2><p>The OpenRails SDK contains a conventional lane allocator that maps task classes into persistent channels and advances a separate monotonic sequence for each `(account, channel)` pair.</p><pre class="ed-code"><code>public selectChannel(taskType: string): number {
+          <p>That matters because the relayer cannot take a valid signed intent from one lane and submit it under another without changing the signed message.</p>
+        </section>
+
+        <section id="execution">
+          <div class="ed-section-kicker">04 / Execution trace</div>
+          <h2>Ordering exists inside a lane, not across every lane.</h2>
+
+          <div class="ed-model">
+            <div class="ed-model-label">Example</div>
+            <pre>Initial state
+
+N[A][payments] = 12
+N[A][streams]  = 31
+
+Authorization P
+    account = A
+    lane    = payments
+    nonce   = 12
+
+Authorization S
+    account = A
+    lane    = streams
+    nonce   = 31
+
+execute(S)
+    N[A][streams]  = 32
+    N[A][payments] = 12
+
+execute(P)
+    N[A][payments] = 13
+
+replay(P, nonce=12)
+    rejected</pre>
+          </div>
+
+          <p>The SDK includes a conventional channel allocator for this persistent-lane interpretation: a workload descriptor is mapped to a channel and each account/channel pair advances independently.</p>
+
+          <pre class="ed-code"><code>public selectChannel(taskType: string): number {
   let hash = 5381;
+
   for (let i = 0; i &lt; taskType.length; i++) {
     hash = ((hash &lt;&lt; 5) + hash + taskType.charCodeAt(i)) | 0;
   }
+
   return Math.abs(hash) % 256;
-}
+}</code></pre>
 
-public async nextNonce(account, channel) {
-  const key = `nonce:${account.toLowerCase()}:${channel}`;
-  const current = (await cache.get(key)) ?? 0;
-  await cache.set(key, current + 1);
-  return current;
-}</code></pre><p>This is useful when the application already knows that two classes of work should not block one another. For example, a persistent agent workload can maintain ordering within a lane while another independent workload advances elsewhere.</p><div class="ed-compare"><div><strong>Single sequence</strong><p>Easy to reason about, but unrelated work from the same authority contends on one ordering domain.</p></div><div><strong>Multiple lanes</strong><p>More concurrency, but the application must define and manage the lane semantics correctly.</p></div></div></section>
+          <p>The point is not that hashing a task name is inherently special. It demonstrates the conventional interpretation: the channel identifies a continuing class of work, and the nonce sequences operations inside that class.</p>
+        </section>
 
-        <section id="tradeoffs"><div class="ed-section-kicker">04 / Trade-offs</div><h2>More concurrency means more state and more policy.</h2><p>A lane model moves complexity upward into the application. The system now has to decide who allocates channels, whether lanes are persistent or one-shot, how they are serialized, and whether any two actions actually should be independent.</p><p>It also creates more contract storage entries than a single global counter. That cost may be justified for high-concurrency delegated workflows and unnecessary for simple sequential payments.</p></section>
+        <section id="limits">
+          <div class="ed-section-kicker">05 / Limits</div>
+          <h2>Partitioning the nonce space does not remove ordering problems. It relocates them.</h2>
+          <p>The application now has to define which operations belong together, which operations may safely commute, how channels are allocated, and how much persistent state the contract should accumulate.</p>
+          <p>A single application nonce is easier to inspect and reason about. Multiple nonce domains are useful only when the independence is real enough to justify the extra namespace and state.</p>
+          <p>This also should not be presented as a general alternative to ERC-4337 keyed nonces. ERC-4337 already provides nonce-key semantics for UserOperations. OpenRails uses a similar dimensional idea at a separate protocol boundary: signed economic authorizations consumed by the Hub.</p>
+        </section>
 
-        <section id="boundary"><div class="ed-section-kicker">05 / Boundary</div><h2>This is not “better Ethereum nonces.”</h2><p class="lead">It is a different replay-protection scope used inside a payment authorization protocol.</p><p>Ethereum's account nonce remains the transaction-ordering mechanism. ERC-4337 already provides keyed nonce semantics for account abstraction. OpenRails' contribution is application-specific: it binds lane selection to the semantics of economic authority and later uses a more specialized lane policy for deferred RailsCards.</p><p>That specialized policy is the next story.</p></section>
+        <section id="next">
+          <div class="ed-section-kicker">06 / Derived question</div>
+          <h2>What should a lane represent?</h2>
+          <p class="lead">The initial answer was a persistent execution domain. RailsCard exposed a case where that was still too coarse.</p>
+          <p>Two deferred authorizations may be issued by the same account, serve the same payment class, and still have no ordering dependency between them. That failure produced the next experiment: allocate the lane to the authorization itself.</p>
+        </section>
       </article>
 
-      <aside class="ed-aside"><div class="ed-aside-box"><h3>Established terms</h3><ul><li>transaction nonce</li><li>keyed nonce</li><li>replay protection</li><li>nonce domain / lane</li><li>application-level authorization</li></ul></div><div class="ed-aside-box"><h3>Implementation evidence</h3><p>`ArcOpenRailsHubV1` stores account × channel counters. The SDK includes a channelized `NonceEngine` for independent workloads.</p></div><div class="ed-aside-box"><h3>Claim boundary</h3><p>No claim that this model is universally superior, nor that OpenRails originated the general concept of keyed or 2D nonces.</p></div></aside>
+      <aside class="ed-aside">
+        <div class="ed-aside-box"><h3>Established vocabulary</h3><ul><li>transaction nonce</li><li>keyed nonce</li><li>sequence</li><li>replay protection</li><li>application-level authorization</li></ul></div>
+        <div class="ed-aside-box"><h3>Implementation</h3><p>`ArcOpenRailsHubV1` stores account × channel counters. `NonceEngine` maintains corresponding independent sequences client-side.</p></div>
+        <div class="ed-aside-box"><h3>Claim boundary</h3><p>No claim that OpenRails originated keyed nonce domains or that multiple lanes are preferable for every workload.</p></div>
+      </aside>
     </div>
 
-    <div class="ed-shell ed-story-next"><a href="../dynamic-authorization-lanes/"><span>Next featured research</span><strong>Dynamic Authorization Lanes →</strong></a></div>
+    <div class="ed-shell ed-story-next"><a href="../dynamic-authorization-lanes/"><span>Derived experiment</span><strong>Dynamic Authorization Lanes →</strong></a></div>
   </main>
 
-  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Jason V</div><small>Protocol engineering and systems research.</small></div><div><small>Related system</small><br><a href="../../work/openrails/">OpenRails ↗</a></div><div><small>Research index</small><br><a href="../">All research ↗</a></div></div></footer>
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Jason V</div><small>Protocol engineering and systems research.</small></div><div><small>Related implementation</small><br><a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails ↗</a></div><div><small>Archive</small><br><a href="../">Research index ↗</a></div></div></footer>
 </body>
 </html>
