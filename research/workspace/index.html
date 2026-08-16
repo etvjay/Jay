@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A code-first research note on OpenRails Workspace as a persistent authority context for humans, applications, agents, services, and economic state.">
+  <title>Workspace — Persistent Authority Context — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-shell header-inner">
+    <a class="brand" href="../../">JASON V <span>/ RESEARCH PRACTICE</span></a>
+    <nav class="nav"><a href="../../">Index</a><a aria-current="page" href="../">Research</a><a href="../../#work">Work</a><a href="../../#about">About</a></nav>
+  </div>
+</header>
+<main>
+  <section class="note-hero">
+    <div class="site-shell">
+      <a class="back-link" href="../programmable-relationship/">← Programmable Relationship</a>
+      <div class="note-kicker"><span>Experiment 01</span><span>P-002</span><span>OpenRails</span><span>Implemented</span></div>
+      <h1 class="note-title">Workspace</h1>
+      <p class="note-deck">A persistent authority context for economic activity that should outlive any single wallet action or transaction.</p>
+    </div>
+  </section>
+
+  <div class="site-shell note-layout">
+    <aside class="note-nav">
+      <a href="#question">Question</a>
+      <a href="#shape">Code</a>
+      <a href="#authority">Authority binding</a>
+      <a href="#allows">What it allows</a>
+      <a href="#boundary">Boundary</a>
+      <a href="#next">Next primitive</a>
+    </aside>
+
+    <article class="note-content">
+      <section id="question">
+        <div class="note-section-label">01 / Question</div>
+        <p class="note-lead">If people, applications, services and agents participate in the same continuing economic activity, where should the shared context live?</p>
+        <div class="state-line">wallet → signs an action</div>
+        <div class="state-line state-line-strong">workspace → persists the activity, actors, authority and downstream lineage</div>
+      </section>
+
+      <section id="shape">
+        <div class="note-section-label">02 / Code</div>
+        <div class="code-caption">OpenRails Shared Interface 1.2 — abridged</div>
+        <pre class="research-code"><code>type Workspace = {
+  id: string;
+  name: string;
+  ownerActorRef: ActorRef;
+  status: "DRAFT" | "ACTIVE" | "SUSPENDED" | "CLOSED";
+  createdAt: string;
+  updatedAt: string;
+  provenance: Provenance;
+};
+
+type Actor = {
+  id: string;
+  kind: "person" | "application" | "agent" | "service" | "sidecar";
+  authorityStatus: "UNVERIFIED" | "VERIFIED" | "SUSPENDED" | "REVOKED";
+  walletAddress?: string;
+};
+
+type WorkspaceMember = {
+  workspaceRef: WorkspaceRef;
+  actorRef: ActorRef;
+  role: "owner" | "administrator" | "operator" | "member" | "observer";
+  permissions?: string[];
+};</code></pre>
+        <p class="code-note">The Workspace is not the wallet. It can contain several kinds of actors, while membership, role and authority remain explicit protocol state.</p>
+      </section>
+
+      <section id="authority">
+        <div class="note-section-label">03 / Authority binding</div>
+        <div class="code-caption">The Runtime persists both the Workspace object and the authenticated signer that registered it</div>
+        <pre class="research-code"><code>private prepareWorkspace(request, binding, state, at) {
+  const workspace = request.data.workspace;
+
+  if (state.workspaces[workspace.id] ||
+      state.workspaceAuthorities[workspace.id]) {
+    throw new RuntimeError("STATE_STALE",
+      "Workspace has already been registered.");
+  }
+
+  const authority = getAddress(binding.signer);
+
+  return {
+    commit: (draft) => {
+      draft.workspaces[workspace.id] = clone(workspace);
+      draft.workspaceAuthorities[workspace.id] = authority;
+    }
+  };
+}</code></pre>
+        <p class="note-copy">This produces two related but different facts: <strong>who the Workspace says its owner actor is</strong>, and <strong>which authenticated wallet authority registered the Workspace into the Runtime</strong>. The Runtime can later require that stored authority instead of reconstructing it from an arbitrary caller.</p>
+
+        <div class="code-caption">Persistent Runtime state</div>
+        <pre class="research-code"><code>interface RuntimeState {
+  workspaces: Record&lt;string, Workspace&gt;;
+  workspaceAuthorities: Record&lt;string, string&gt;;
+  actors: Record&lt;string, Actor&gt;;
+  actorWorkspaces: Record&lt;string, string&gt;;
+
+  paths: Record&lt;string, Path&gt;;
+  intents: Record&lt;string, Intent&gt;;
+  proposals: Record&lt;string, Proposal&gt;;
+  pacts: Record&lt;string, Pact&gt;;
+  proofs: Record&lt;string, Proof&gt;;
+}</code></pre>
+      </section>
+
+      <section id="allows">
+        <div class="note-section-label">04 / What it allows</div>
+        <div class="allow-grid">
+          <div class="allow-item"><span>01</span><strong>Wallet ≠ activity</strong><p>A cryptographic signer can authorize transitions without becoming the only identity or organizational context the system knows.</p></div>
+          <div class="allow-item"><span>02</span><strong>Heterogeneous actors</strong><p>Humans, agents, applications, services and sidecars can participate inside one persistent context while retaining different roles and authority states.</p></div>
+          <div class="allow-item"><span>03</span><strong>Shared provenance root</strong><p>Paths, Intents, Proposals and Pacts can all reference the same Workspace instead of rediscovering who and what the activity belongs to each time.</p></div>
+          <div class="allow-item"><span>04</span><strong>Lifecycle control</strong><p>A Workspace can be suspended or closed without pretending every downstream object is an unrelated transaction.</p></div>
+        </div>
+
+        <div class="state-machine" aria-label="Workspace relationship graph">
+          <span>Workspace</span><i>→</i><span>Actors</span><i>→</i><span>Paths</span><i>→</i><span>Intents</span><i>→</i><span>Pacts</span><i>→</i><span>Receipts</span>
+        </div>
+      </section>
+
+      <section id="boundary">
+        <div class="note-section-label">05 / Boundary</div>
+        <div class="note-boundary">
+          <strong>A Workspace is not a custody container and not a new account abstraction.</strong>
+          <p>It is the persistent coordination and authority context in which later permissions and commitments can be interpreted. Wallets still provide cryptographic authorization; settlement systems remain authoritative for actual value movement.</p>
+        </div>
+      </section>
+
+      <section id="next">
+        <div class="note-section-label">06 / Next primitive</div>
+        <p class="note-lead">Workspace tells us where the activity exists. The next question is narrower: how can one actor repeatedly act for another without receiving unlimited authority?</p>
+        <div class="derived-list">
+          <div><span>P-003</span><strong>Path</strong><p>Persistent bounded delegation.</p></div>
+        </div>
+        <p class="note-source">Implementation: <a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails ↗</a></p>
+      </section>
+    </article>
+  </div>
+</main>
+<footer class="footer"><div class="site-shell footer-grid"><span>Jason V / P-002 / Workspace</span><a href="../programmable-relationship/">P-001 ↗</a></div></footer>
+<script src="../../assets/site.js"></script>
+</body>
+</html>
