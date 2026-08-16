@@ -7,27 +7,19 @@
   <title>Dynamic Authorization Lanes — Jason V</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../assets/editorial.css">
+  <link rel="stylesheet" href="../../assets/editorial-fixes.css">
 </head>
 <body class="editorial ed-story">
   <div class="ed-topline"><div class="ed-shell"><span>Jason V / Protocol Engineering &amp; Systems Research</span><span>Research → Experiment → Build → Evidence</span></div></div>
-  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice</small></a><nav class="ed-nav" aria-label="Primary"><a aria-current="page" href="../">Research</a><a href="../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#practice">Work &amp; Skills</a><a href="../../#about">About</a></nav><div class="ed-header-meta">Featured research<br>OpenRails / RailsCard</div></div></header>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice</small></a><nav class="ed-nav" aria-label="Primary"><a aria-current="page" href="../">Research</a><a href="../../experiments/">Experiments</a><a href="../../projects/">Projects</a><a href="../../work/">Work &amp; Skills</a><a href="../../about/">About</a></nav><div class="ed-header-meta">Featured research<br>OpenRails / RailsCard</div></div></header>
 
   <main>
     <section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Featured Research 02<br>E-002<br>OpenRails / RailsCard<br>Implemented + test-covered</div><div><div class="ed-kicker">Deferred authority / replay domains</div><h1>Dynamic Authorization Lanes</h1><p class="ed-story-deck">A nonce-lane policy in which the lane is allocated to one independently exercisable authorization rather than to a persistent execution queue.</p><div class="ed-statusline"><span>Implemented</span><span>Fresh uint128 lane</span><span>Reverse-order redemption tested</span></div></div></div></section>
 
     <div class="ed-shell ed-story-body">
       <aside class="ed-story-toc"><a href="#pressure">Failure</a><a href="#lineage">Lineage</a><a href="#model">Model</a><a href="#code">Code</a><a href="#evidence">Evidence</a><a href="#limits">Limits</a></aside>
-
       <article class="ed-story-main">
-        <section id="pressure">
-          <div class="ed-section-kicker">01 / Failure that produced the mechanism</div>
-          <h2>Replay protection was correct. The authority model was not.</h2>
-          <p class="lead">RailsCards can be signed before they are redeemed. Two independently valid cards could therefore exist at the same time.</p>
-          <p>The early flow issued both against the same current nonce on channel `0`. Whichever card was redeemed first consumed that nonce and made the other card stale.</p>
-
-          <div class="ed-model">
-            <div class="ed-model-label">Failure trace</div>
-            <pre>N[payer][0] = 12
+        <section id="pressure"><div class="ed-section-kicker">01 / Failure that produced the mechanism</div><h2>Replay protection was correct. The authority model was not.</h2><p class="lead">RailsCards can be signed before they are redeemed. Two independently valid cards could therefore exist at the same time.</p><p>The early flow issued both against the same current nonce on channel `0`. Whichever card was redeemed first consumed that nonce and made the other card stale.</p><div class="ed-model"><div class="ed-model-label">Failure trace</div><pre>N[payer][0] = 12
 
 sign Card A
     lane  = 0
@@ -43,20 +35,8 @@ redeem B
 redeem A
     expected 12
     observed 13
-    → rejected</pre>
-            <p>The rejection is correct replay behavior. The problem is that A and B were never meant to be ordered relative to one another.</p>
-          </div>
-        </section>
-
-        <section id="lineage">
-          <div class="ed-section-kicker">02 / Technical lineage</div>
-          <h2>The mechanism starts from ordinary keyed nonce semantics.</h2>
-          <p>Ethereum account transactions use a sequential account nonce. ERC-4337 allows smart accounts to partition UserOperation nonces into keyed sequences. OpenRails already had its own persistent `(account, channel) → sequence` application nonce model.</p>
-          <p>The RailsCard change is therefore not “invent a second dimension.” The change is narrower: <strong>change what chooses the key and how long that key is expected to live.</strong></p>
-
-          <div class="ed-model">
-            <div class="ed-model-label">Semantic difference</div>
-            <pre>Persistent keyed lane
+    → rejected</pre><p>The rejection is correct replay behavior. The problem is that A and B were never meant to be ordered relative to one another.</p></div></section>
+        <section id="lineage"><div class="ed-section-kicker">02 / Technical lineage</div><h2>The mechanism starts from ordinary keyed nonce semantics.</h2><p>Ethereum account transactions use a sequential account nonce. ERC-4337 allows smart accounts to partition UserOperation nonces into keyed sequences. OpenRails already had its own persistent `(account, channel) → sequence` application nonce model.</p><p>The RailsCard change is therefore not “invent a second dimension.” The change is narrower: <strong>change what chooses the key and how long that key is expected to live.</strong></p><div class="ed-model"><div class="ed-model-label">Semantic difference</div><pre>Persistent keyed lane
 
     key = task class / module / session / queue
 
@@ -71,20 +51,8 @@ Authorization-scoped lane
     N[account][key]
         0 → 1
 
-    another authority receives another key</pre>
-          </div>
-
-          <p>The underlying storage model is the same kind of two-dimensional counter. The research question is about the semantics of namespace allocation.</p>
-        </section>
-
-        <section id="model">
-          <div class="ed-section-kicker">03 / Model</div>
-          <h2>The replay domain is created with the authority.</h2>
-          <p>For a deferred RailsCard, OpenRails allocates a fresh non-zero 128-bit channel. Channel `0` remains reserved for immediate sequential opens.</p>
-
-          <div class="ed-model">
-            <div class="ed-model-label">Authorization model</div>
-            <pre>Card A
+    another authority receives another key</pre></div><p>The underlying storage model is the same kind of two-dimensional counter. The research question is about the semantics of namespace allocation.</p></section>
+        <section id="model"><div class="ed-section-kicker">03 / Model</div><h2>The replay domain is created with the authority.</h2><p>For a deferred RailsCard, OpenRails allocates a fresh non-zero 128-bit channel. Channel `0` remains reserved for immediate sequential opens.</p><div class="ed-model"><div class="ed-model-label">Authorization model</div><pre>Card A
     signed terms
     + lane α
     + nonce 0
@@ -100,18 +68,8 @@ consume(A)
     N[payer][α] : 0 → 1
 
 consume(B)
-    N[payer][β] : 0 → 1</pre>
-            <p>The lane becomes one of the coordinates that define where this authorization may be consumed.</p>
-          </div>
-
-          <p>Because `nonceChannel` and `nonceValue` are inside the signed settlement intent, a relayer cannot re-home an authorization into another replay domain without invalidating the signature.</p>
-        </section>
-
-        <section id="code">
-          <div class="ed-section-kicker">04 / Code</div>
-          <h2>Fresh lane allocation is explicit.</h2>
-
-          <pre class="ed-code"><code>export const RAILSCARD_NONCE_CHANNEL_BYTES = 16;
+    N[payer][β] : 0 → 1</pre><p>The lane becomes one of the coordinates that define where this authorization may be consumed.</p></div><p>Because `nonceChannel` and `nonceValue` are inside the signed settlement intent, a relayer cannot re-home an authorization into another replay domain without invalidating the signature.</p></section>
+        <section id="code"><div class="ed-section-kicker">04 / Code</div><h2>Fresh lane allocation is explicit.</h2><pre class="ed-code"><code>export const RAILSCARD_NONCE_CHANNEL_BYTES = 16;
 
 export function nonceChannelFromBytes(
   bytes: Uint8Array
@@ -130,11 +88,7 @@ export function randomRailsCardNonceChannel(): bigint {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
   return nonceChannelFromBytes(bytes);
-}</code></pre>
-
-          <p>The application checks the generated lane against current Hub state before signing the card.</p>
-
-          <pre class="ed-code"><code>for (let attempt = 0; attempt &lt; MAX_ATTEMPTS; attempt += 1) {
+}</code></pre><p>The application checks the generated lane against current Hub state before signing the card.</p><pre class="ed-code"><code>for (let attempt = 0; attempt &lt; MAX_ATTEMPTS; attempt += 1) {
   const candidate = randomRailsCardNonceChannel();
 
   const currentNonce = await hub.accountNonceTracks(
@@ -145,17 +99,8 @@ export function randomRailsCardNonceChannel(): bigint {
   if (currentNonce === 0n) {
     return candidate;
   }
-}</code></pre>
-
-          <p>The contract itself needs no special RailsCard-specific nonce primitive. It still consumes the same `(payer, channel, nonce)` state. The innovation, if the term is useful here, is entirely in <strong>allocation policy</strong>.</p>
-        </section>
-
-        <section id="evidence">
-          <div class="ed-section-kicker">05 / Test evidence</div>
-          <h2>The test is about independence, not throughput.</h2>
-          <p>The merged RailsCard tests construct two recipient-bound cards on different lanes, sign both before either is used, then redeem them in reverse order. The same test shape is repeated for bearer cards.</p>
-
-          <pre class="ed-code"><code>const channelA = 41_001;
+}</code></pre><p>The contract itself needs no special RailsCard-specific nonce primitive. It still consumes the same `(payer, channel, nonce)` state. The innovation, if the term is useful here, is entirely in <strong>allocation policy</strong>.</p></section>
+        <section id="evidence"><div class="ed-section-kicker">05 / Test evidence</div><h2>The test is about independence, not throughput.</h2><p>The merged RailsCard tests construct two recipient-bound cards on different lanes, sign both before either is used, then redeem them in reverse order. The same test shape is repeated for bearer cards.</p><pre class="ed-code"><code>const channelA = 41_001;
 const channelB = 41_002;
 
 const envelopeA = await sign(
@@ -175,13 +120,7 @@ expect(
 
 expect(
   await hub.accountNonceTracks(payer, channelB)
-).to.equal(1n);</code></pre>
-
-          <p>A subsequent authorization attempting to reuse `channelA` with nonce `0` is rejected. The evidence therefore supports a deliberately narrow claim:</p>
-
-          <div class="ed-model">
-            <div class="ed-model-label">What survived the experiment</div>
-            <pre>two deferred authorizations
+).to.equal(1n);</code></pre><p>A subsequent authorization attempting to reuse `channelA` with nonce `0` is rejected. The evidence therefore supports a deliberately narrow claim:</p><div class="ed-model"><div class="ed-model-label">What survived the experiment</div><pre>two deferred authorizations
     same issuer
     no intended ordering dependency
 
@@ -192,30 +131,16 @@ separate replay domains
         ↓
 
 redeem in either order
-while replay on either consumed domain still fails</pre>
-          </div>
-        </section>
-
-        <section id="limits">
-          <div class="ed-section-kicker">06 / Limits and open questions</div>
-          <h2>Independence has a storage and namespace cost.</h2>
-          <p>Each fresh lane can create another `(payer, lane)` storage entry. For immediate sequential payments this would be unnecessary, which is why channel `0` remains the simple path.</p>
-          <p>The allocator uses randomness plus an unused-lane read. A deterministic channel derived from an authorization identifier is another plausible design, but it would have different collision, predictability, and linkage properties and has not been established as preferable here.</p>
-          <p>The mechanism also does not resolve EIP-2612 permit concurrency. Token permit state and OpenRails Hub replay state are separate authorization surfaces.</p>
-          <p>Finally, describing a one-shot lane as a “nullifier” would be too strong. The `0 → 1` spent-state behavior is analogous at a high level, but OpenRails is not constructing a cryptographic or zero-knowledge nullifier.</p>
-        </section>
+while replay on either consumed domain still fails</pre></div></section>
+        <section id="limits"><div class="ed-section-kicker">06 / Limits and open questions</div><h2>Independence has a storage and namespace cost.</h2><p>Each fresh lane can create another `(payer, lane)` storage entry. For immediate sequential payments this would be unnecessary, which is why channel `0` remains the simple path.</p><p>The allocator uses randomness plus an unused-lane read. A deterministic channel derived from an authorization identifier is another plausible design, but it would have different collision, predictability, and linkage properties and has not been established as preferable here.</p><p>The mechanism also does not resolve EIP-2612 permit concurrency. Token permit state and OpenRails Hub replay state are separate authorization surfaces.</p><p>Finally, describing a one-shot lane as a “nullifier” would be too strong. The `0 → 1` spent-state behavior is analogous at a high level, but OpenRails is not constructing a cryptographic or zero-knowledge nullifier.</p></section>
       </article>
-
-      <aside class="ed-aside">
-        <div class="ed-aside-box"><h3>Precise term</h3><p>Authorization-scoped replay domain.</p></div>
-        <div class="ed-aside-box"><h3>Implementation status</h3><p>Merged in RailsCard nonce-isolation work; recipient-bound and bearer reverse-order redemption tests included.</p></div>
-        <div class="ed-aside-box"><h3>Not claimed</h3><ul><li>not a replacement for ERC-4337</li><li>not universally cheaper</li><li>not a ZK nullifier</li><li>not a permit-concurrency solution</li></ul></div>
-      </aside>
+      <aside class="ed-aside"><div class="ed-aside-box"><h3>Precise term</h3><p>Authorization-scoped replay domain.</p></div><div class="ed-aside-box"><h3>Implementation status</h3><p>Merged in RailsCard nonce-isolation work; recipient-bound and bearer reverse-order redemption tests included.</p></div><div class="ed-aside-box"><h3>Not claimed</h3><ul><li>not a replacement for ERC-4337</li><li>not universally cheaper</li><li>not a ZK nullifier</li><li>not a permit-concurrency solution</li></ul></div></aside>
     </div>
 
     <div class="ed-shell ed-story-next"><a href="../programmable-relationship/"><span>Broader research thread</span><strong>The Programmable Relationship →</strong></a></div>
   </main>
 
   <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Jason V</div><small>Protocol engineering and systems research.</small></div><div><small>Related implementation</small><br><a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails ↗</a></div><div><small>Previous story</small><br><a href="../2d-nonce-lanes/">2D Nonce Lanes ↗</a></div></div></footer>
+  <script src="../../assets/site.js"></script>
 </body>
 </html>
