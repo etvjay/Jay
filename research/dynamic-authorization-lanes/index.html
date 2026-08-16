@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A code-first research story on OpenRails Dynamic Authorization Lanes: fresh replay domains for independently redeemable RailsCards, compared carefully with Ethereum and ERC-4337 nonce models.">
+  <title>Dynamic Authorization Lanes — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/editorial.css">
+</head>
+<body class="editorial ed-story">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Protocol Engineering &amp; Systems Research</span><span>Research → Experiment → Build → Evidence</span></div></div>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Research practice</small></a><nav class="ed-nav" aria-label="Primary"><a aria-current="page" href="../">Research</a><a href="../#experiments">Experiments</a><a href="../../#projects">Projects</a><a href="../../#work">Work</a><a href="../../#skills">Skills</a></nav><div class="ed-header-meta">Featured research<br>OpenRails / RailsCard</div></div></header>
+
+  <main>
+    <section class="ed-story-head"><div class="ed-shell ed-story-head-grid"><div class="ed-story-index">Featured Research 02<br>E-002<br>OpenRails / RailsCard<br>Implemented + test-covered</div><div><div class="ed-kicker">Deferred authority / replay domains</div><h1>Dynamic Authorization Lanes</h1><p class="ed-story-deck">When a nonce lane stops meaning “this queue” and instead identifies one independently exercisable authorization.</p><div class="ed-statusline"><span>Implemented</span><span>Fresh uint128 lanes</span><span>Reverse-order redemption tested</span></div></div></div></section>
+
+    <div class="ed-shell ed-story-body">
+      <aside class="ed-story-toc"><a href="#pressure">Pressure</a><a href="#existing">Existing models</a><a href="#construction">Construction</a><a href="#result">Result</a><a href="#tradeoffs">Trade-offs</a><a href="#boundary">Boundary</a></aside>
+      <article class="ed-story-main">
+        <section id="pressure"><div class="ed-section-kicker">01 / Pressure</div><h2>Two valid promises were accidentally competing for one slot.</h2><p class="lead">A deferred RailsCard can be signed now and redeemed later. The early implementation put every outstanding card on the same sequential lane.</p><pre class="ed-code"><code>// both cards are prepared before either is redeemed
+Card A -&gt; (channel = 0, nonce = 12)
+Card B -&gt; (channel = 0, nonce = 12)
+
+redeem(B)
+// channel 0 becomes 13
+
+redeem(A)
+// fails: A still carries nonce 12</code></pre><p>The replay protection worked. The concurrency semantics did not. Independent authorizations became mutually exclusive because they shared an ordering position.</p></section>
+
+        <section id="existing"><div class="ed-section-kicker">02 / Existing models</div><h2>The novelty is not the existence of a nonce key.</h2><p>Ethereum account transactions already use a sequential nonce. ERC-4337 defines keyed nonce sequences, allowing a smart account to maintain independent ordering domains. OpenRails itself also has a conventional `NonceEngine` that maps workload classes into persistent channels.</p><p>The RailsCard experiment changes something narrower: <strong>the allocation policy and semantic lifetime of the lane.</strong></p><div class="ed-compare"><div><strong>Persistent keyed lane</strong><p>A lane usually represents a module, session, task class, queue, or continuing ordering domain. Its sequence may advance many times.</p></div><div><strong>Authorization-scoped lane</strong><p>A fresh lane is allocated to one deferred authorization. For the demonstrated RailsCard flow, it is effectively consumed from nonce 0 to nonce 1.</p></div></div></section>
+
+        <section id="construction"><div class="ed-section-kicker">03 / Construction</div><h2>Allocate the replay domain when the authority is created.</h2><pre class="ed-code"><code>export const RAILSCARD_NONCE_CHANNEL_BYTES = 16;
+
+export function randomRailsCardNonceChannel(): bigint {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+
+  let channel = 0n;
+  for (const byte of bytes) {
+    channel = (channel &lt;&lt; 8n) | BigInt(byte);
+  }
+
+  // channel 0 stays reserved for immediate sequential opens
+  return channel === 0n ? 1n : channel;
+}</code></pre><p>Before signing, the application checks that the candidate lane is unused on the Hub. The card is then signed with that lane and `nonceValue = 0`.</p><pre class="ed-code"><code>for (let attempt = 0; attempt &lt; MAX_ATTEMPTS; attempt++) {
+  const candidate = randomRailsCardNonceChannel();
+
+  const currentNonce = await hub.accountNonceTracks(
+    payer,
+    candidate
+  );
+
+  if (currentNonce === 0n) return candidate;
+}</code></pre><p>The signed settlement intent commits to the lane:</p><pre class="ed-code"><code>SettlementIntent(
+  paycardId,
+  metadataHash,
+  recipient,
+  allocation,
+  velocity,
+  genesis,
+  lifespan,
+  recovery,
+  nonceChannel,
+  nonceValue
+)</code></pre><p>So the lane is not just transport metadata. Moving a card to another lane changes the signed message.</p></section>
+
+        <section id="result"><div class="ed-section-kicker">04 / Result</div><h2>Redemption order stops creating an artificial dependency.</h2><pre class="ed-code"><code>Card A -&gt; lane 41001, nonce 0
+Card B -&gt; lane 41002, nonce 0
+
+redeem(B)
+// N[payer][41002] = 1
+
+redeem(A)
+// N[payer][41001] = 1
+
+replay(A on 41001, nonce 0)
+// rejected</code></pre><p>The test suite covers both recipient-bound and bearer RailsCards, signs two cards in advance, redeems them in reverse order, then confirms replay on a consumed lane fails.</p><p>The result is modest but useful: <strong>authorization independence + replay protection + arbitrary redemption order</strong> for the tested deferred-card flow.</p></section>
+
+        <section id="tradeoffs"><div class="ed-section-kicker">05 / Trade-offs</div><h2>The lane count grows with outstanding authorizations.</h2><p>This policy creates additional contract state because each fresh authorization touches a new `(payer, lane)` mapping entry. The current allocator also relies on random lane generation plus an onchain unused-lane check. A deterministic derivation from authorization identity could be studied, but would change collision and privacy properties.</p><p>For simple immediate payments, a fresh lane per authorization is unnecessary. OpenRails explicitly keeps channel `0` for sequential immediate opens.</p><p>There is also a separate authorization-concurrency problem around EIP-2612 permits. The RailsCard lane fix does not solve that problem and should not be described as if it does.</p></section>
+
+        <section id="boundary"><div class="ed-section-kicker">06 / Boundary</div><h2>The lane is best understood as part of the authority.</h2><p class="lead">This is not a claim that per-authorization lanes should replace persistent keyed nonces.</p><p>It is a specific policy for deferred economic authorizations whose exercise should be independent. ERC-4337 already permits arbitrary nonce keys; the OpenRails distinction is semantic: the lane is allocated to the authorization instance itself rather than primarily to a persistent execution queue.</p><p>A useful description is therefore:</p><pre class="ed-code"><code>Dynamic Authorization Lane
+=
+a fresh replay namespace
+allocated to one independently exercisable authority</code></pre><p>For one-shot RailsCards, the lane behaves somewhat like a spent-state coordinate: `0 -&gt; 1`. That is only an analogy. OpenRails does not implement a cryptographic or ZK nullifier system.</p></section>
+      </article>
+
+      <aside class="ed-aside"><div class="ed-aside-box"><h3>Pressure</h3><p>Multiple deferred cards signed before redemption all reused `(channel 0, currentNonce)`, so first redemption invalidated the others.</p></div><div class="ed-aside-box"><h3>Surviving claim</h3><p>Independent deferred authorizations can use independent replay domains and still reject replay.</p></div><div class="ed-aside-box"><h3>Not claimed</h3><ul><li>not a replacement for ERC-4337</li><li>not universally lower-cost</li><li>not a ZK nullifier</li><li>not a solution to permit concurrency</li></ul></div></aside>
+    </div>
+
+    <div class="ed-shell ed-story-next"><a href="../programmable-relationship/"><span>Broader research thread</span><strong>The Programmable Relationship →</strong></a></div>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Jason V</div><small>Protocol engineering and systems research.</small></div><div><small>Related system</small><br><a href="../../work/openrails/">OpenRails ↗</a></div><div><small>Previous story</small><br><a href="../2d-nonce-lanes/">2D Nonce Lanes ↗</a></div></div></footer>
+</body>
+</html>
