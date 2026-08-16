@@ -1,22 +1,47 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Research directions in Jason V's protocol engineering and systems research practice.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Jason V research archive — featured systems research, experiments, primitives and technical notes.">
   <title>Research — Jason V</title>
-  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../assets/styles.css">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/editorial.css">
 </head>
-<body>
-<header class="site-header"><div class="site-shell header-inner"><a class="brand" href="../">JASON V <span>/ RESEARCH PRACTICE</span></a><nav class="nav"><a href="../">Index</a><a aria-current="page" href="./">Research</a><a href="../#work">Work</a><a href="../#about">About</a></nav></div></header>
-<main>
-<section class="research-hero"><div class="site-shell"><div class="eyebrow">Research index</div><h1>Questions before products.</h1><p class="hero-copy">Research is organized as experiments, primitives, and technical notes. Projects are the apparatus used to test them—not the organizing unit.</p></div></section>
-<div class="site-shell">
-<section class="direction-block" id="economic-relationships"><div class="index">01</div><div><h2><a href="./programmable-relationship/">Governed Value &amp; Programmable Relationships ↗</a></h2><div class="direction-projects"><a class="pill" href="../work/openrails/">OpenRails</a><a class="pill" href="../work/concord/">Concord</a><span class="pill">OTC Chronograph</span></div></div><div><p class="direction-question">What changes when value moves according to the state and authority of a relationship rather than as isolated transactions?</p><p class="direction-position">The first code-first note is live: Workspace, Path and Pact establish the initial construction. Follow-on notes will cover RailsCard, dynamic and bilateral nonce lanes, Gaia, Root/Child Accord, and conditional capital DAGs.</p></div></section>
-<section class="direction-block" id="confidential-coordination"><div class="index">02</div><div><h2>Confidential &amp; Bounded Coordination</h2><div class="direction-projects"><a class="pill" href="../work/nox-accord/">NOX ACCORD</a><a class="pill" href="../work/concord/">Concord</a></div></div><div><p class="direction-question">Can independent actors coordinate private economic intent without surrendering authority or revealing every input?</p><p class="direction-position">Confidentiality is most useful when it changes what independent actors can safely coordinate—not merely when it hides data. The research moves from private comparison and bounded allocation toward persistent confidential relationships.</p></div></section>
-<section class="direction-block" id="evidence-judgment"><div class="index">03</div><div><h2>Evidence, Judgment &amp; Economic Understanding</h2><div class="direction-projects"><a class="pill" href="../work/rjp/">RJP</a><a class="pill" href="../work/noema/">Noema</a></div></div><div><p class="direction-question">How should software move from observing reality to acting on an interpretation of it?</p><p class="direction-position">Observation, evidence, inference, judgment, and authority are different objects. The goal is to preserve those distinctions from source material through economic understanding and downstream action.</p></div></section>
-<section class="direction-block" id="memory-agency"><div class="index">04</div><div><h2>Memory &amp; Autonomous Agency</h2><div class="direction-projects"><a class="pill" href="../work/engram/">Engram</a><a class="pill" href="../work/thinking-reed/">Thinking Reed</a></div></div><div><p class="direction-question">How can autonomous systems improve from experience without silently surrendering decision authority to memory?</p><p class="direction-position">Memory is operational only when influence can be reconstructed. The broader research asks how persistent human–AI systems retain uncertainty, evidence, dissent, authority, execution history, and revision over time.</p></div></section>
-</div>
-</main>
-<footer class="footer"><div class="site-shell footer-grid"><span>Jason V / Research Index</span><a href="../">Return to index ↗</a></div></footer>
-<script src="../assets/site.js"></script>
-</body></html>
+<body class="editorial">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Research archive</span><span>Questions · experiments · mechanisms · evidence</span></div></div>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../">Jason V<small>Research practice</small></a><nav class="ed-nav" aria-label="Primary"><a aria-current="page" href="./">Research</a><a href="#experiments">Experiments</a><a href="../#projects">Projects</a><a href="../#practice">Work &amp; Skills</a><a href="../#about">About</a></nav><div class="ed-header-meta">Research index<br>Selected technical notes</div></div></header>
+
+  <main>
+    <section class="ed-mast"><div class="ed-shell ed-mast-grid"><div><div class="ed-kicker">Research index / Vol. 01</div><h1>Questions<br>before<br>products.</h1></div><div class="ed-mast-intro"><p>Research is organized as stories, experiments and primitives. Projects are the apparatus used to test them—not the organizing unit.</p><p class="small">Each note aims to establish the existing substrate first, then the implementation pressure, the mechanism we tried, what it enabled, what it cost, and what remains unproven.</p></div></div></section>
+
+    <section class="ed-shell" aria-label="Featured research">
+      <div class="ed-edition">
+        <a class="ed-feature" href="./2d-nonce-lanes/"><div class="ed-feature-number">Featured research 01 / Replay protection</div><h2>2D Nonce Lanes</h2><p class="ed-feature-deck">Independent ordering domains for application-level authorizations.</p><p class="ed-feature-copy">Ethereum transaction nonces, ERC-4337 keyed nonces, and OpenRails’ account × channel model—compared without pretending that different semantics imply a universally better nonce architecture.</p><div class="ed-feature-footer"><span>EVM / OpenRails</span><span>Read ↗</span></div></a>
+        <a class="ed-feature" href="./dynamic-authorization-lanes/"><div class="ed-feature-number">Featured research 02 / Deferred authority</div><h2>Dynamic Authorization Lanes</h2><p class="ed-feature-deck">Fresh replay domains for independently exercisable RailsCards.</p><p class="ed-feature-copy">The lane represents one deferred authorization rather than a long-lived queue. The mechanism emerged because two valid pre-signed cards could otherwise invalidate one another.</p><div class="ed-feature-footer"><span>Merged + test-covered</span><span>Read ↗</span></div></a>
+      </div>
+    </section>
+
+    <section class="ed-section" id="experiments"><div class="ed-shell"><div class="ed-section-head"><div class="ed-section-kicker">Experiment 01</div><h2 class="ed-section-title">How does value move through a governed relationship?</h2></div><div class="ed-ledger">
+      <a class="ed-ledger-row" href="./programmable-relationship/"><div class="ed-ledger-id">P-001</div><div class="ed-ledger-name">Programmable Relationship</div><div class="ed-ledger-q">What changes when authority, commitments, evidence, execution and recovery remain related beyond the transaction?</div><div class="ed-ledger-state">Research note<br>OpenRails / Concord</div></a>
+      <a class="ed-ledger-row" href="./workspace/"><div class="ed-ledger-id">P-002</div><div class="ed-ledger-name">Workspace</div><div class="ed-ledger-q">Where should persistent activity and authority context live when humans, agents and services operate together?</div><div class="ed-ledger-state">Implemented<br>OpenRails runtime</div></a>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">P-003</div><div class="ed-ledger-name">Path</div><div class="ed-ledger-q">How can delegated authority be repeatable without becoming unrestricted custody?</div><div class="ed-ledger-state">Next story<br>OpenRails</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">P-004</div><div class="ed-ledger-name">Pact</div><div class="ed-ledger-q">Where should permission end and accepted economic commitment begin?</div><div class="ed-ledger-state">Queued<br>OpenRails</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">P-005</div><div class="ed-ledger-name">RailsCard</div><div class="ed-ledger-q">Can a bounded payment authorization become a portable, deferred object without pretending authorization is funding?</div><div class="ed-ledger-state">Queued<br>OpenRails</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">P-008</div><div class="ed-ledger-name">Gaia Case</div><div class="ed-ledger-q">How should failure, disputes and rectification remain inside the relationship that produced them?</div><div class="ed-ledger-state">Interface-defined<br>OpenRails</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">P-010</div><div class="ed-ledger-name">Root / Child Accord</div><div class="ed-ledger-q">Can multiple capital relationships compose while preserving provider-level authority, exposure and lineage?</div><div class="ed-ledger-state">Implemented<br>Concord</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">P-011</div><div class="ed-ledger-name">Conditional Capital DAG</div><div class="ed-ledger-q">Can capital become exercisable according to dependencies, time, evidence and explicit failure semantics?</div><div class="ed-ledger-state">Implemented<br>OTC Chronograph</div></div>
+    </div></div></section>
+
+    <section class="ed-section"><div class="ed-shell"><div class="ed-section-head"><div class="ed-section-kicker">Other research programmes</div><h2 class="ed-section-title">The same boundaries reappear under different systems pressures.</h2></div><div class="ed-ledger">
+      <div class="ed-ledger-row"><div class="ed-ledger-id">EXP-02</div><div class="ed-ledger-name">Behavioural Identity</div><div class="ed-ledger-q">What does observable behavior actually allow another system to conclude about an actor?</div><div class="ed-ledger-state">RJP / Noema</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">EXP-03</div><div class="ed-ledger-name">Evidence &amp; Understanding</div><div class="ed-ledger-q">How far may a computational system legitimately move from what it observed toward what it claims to understand?</div><div class="ed-ledger-state">Gaia / RJP / Noema</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">EXP-04</div><div class="ed-ledger-name">Persistent Agency</div><div class="ed-ledger-q">When does prior execution become memory that actually changes later behavior?</div><div class="ed-ledger-state">Engram / Thinking Reed</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">EXP-05</div><div class="ed-ledger-name">Coordination Without Shared State</div><div class="ed-ledger-q">Do actors need the same internal knowledge in order to produce compatible outcomes?</div><div class="ed-ledger-state">NOX ACCORD / Concord / One Spin</div></div>
+      <div class="ed-ledger-row"><div class="ed-ledger-id">EXP-06</div><div class="ed-ledger-name">Bounded Autonomy</div><div class="ed-ledger-q">What is the smallest authority an autonomous actor needs in order to complete an economic objective?</div><div class="ed-ledger-state">OpenRails / Chronograph / AgentVault</div></div>
+    </div></div></section>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Research archive</div><small>Code becomes the implementation of an argument.</small></div><div><small>Featured</small><br><a href="./2d-nonce-lanes/">2D Nonce Lanes</a><br><a href="./dynamic-authorization-lanes/">Dynamic Authorization Lanes</a></div><div><small>Index</small><br><a href="../">Home</a><br><a href="../#projects">Projects</a><br><a href="../#practice">Work &amp; Skills</a></div></div></footer>
+</body>
+</html>
