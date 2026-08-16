@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A code-first research note on programmable economic relationships: persistent authority, commitments, evidence, settlement, failure, and lineage.">
+  <title>The Programmable Relationship — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="site-shell header-inner">
+    <a class="brand" href="../../">JASON V <span>/ RESEARCH PRACTICE</span></a>
+    <nav class="nav"><a href="../../">Index</a><a aria-current="page" href="../">Research</a><a href="../../#work">Work</a><a href="../../#about">About</a></nav>
+  </div>
+</header>
+<main>
+  <section class="note-hero">
+    <div class="site-shell">
+      <a class="back-link" href="../">← Research index</a>
+      <div class="note-kicker"><span>Experiment 01</span><span>P-001</span><span>Research note</span><span>Code-first</span></div>
+      <h1 class="note-title">The Programmable Relationship</h1>
+      <p class="note-deck">What changes when value moves according to the state and authority of a relationship rather than as isolated transactions?</p>
+    </div>
+  </section>
+
+  <div class="site-shell note-layout">
+    <aside class="note-nav">
+      <a href="#question">Question</a>
+      <a href="#thesis">Working thesis</a>
+      <a href="#construction">Construction</a>
+      <a href="#allows">What it allows</a>
+      <a href="#boundary">Boundary</a>
+      <a href="#derived">Derived investigations</a>
+    </aside>
+
+    <article class="note-content">
+      <section id="question">
+        <div class="note-section-label">01 / Question</div>
+        <p class="note-lead">A transaction tells us that value moved. It does not, by itself, preserve the authority, commitment, evidence, limits, recovery path, or history that made that movement legitimate.</p>
+        <div class="state-line">transaction → consequence</div>
+        <div class="state-line state-line-strong">relationship → authority → commitment → evidence → execution → receipt → continuation</div>
+      </section>
+
+      <section id="thesis">
+        <div class="note-section-label">02 / Working thesis</div>
+        <p class="note-lead">The relationship can be a first-class computational object. Transactions then become state transitions inside that object rather than the only durable thing the system remembers.</p>
+        <p class="note-copy">The useful object is not “Alice can send USDC.” It is closer to “this actor may perform this capability, for this purpose, under these limits, because these parties accepted these terms, until this state changes.”</p>
+      </section>
+
+      <section id="construction">
+        <div class="note-section-label">03 / Construction</div>
+        <div class="code-caption">OpenRails interface shape — abridged from the current shared interface</div>
+        <pre class="research-code"><code>const workspace = {
+  ownerActorRef,
+  status: "ACTIVE",
+  provenance
+};
+
+const path = {
+  workspaceRef: workspace.id,
+  issuerActorRef,
+  delegateActorRef,
+  capabilities: ["PAY"],
+  limits: [{
+    asset: "USDC",
+    maxAmount: "10000",
+    maxAmountPerTransaction: "250",
+    maxTransactionsPerPeriod: "100",
+    periodSeconds: "3600",
+    maxVelocityPerSecond: "50",
+    maxLifespanSeconds: "86400"
+  }],
+  status: "ACTIVE",
+  signatureBinding,
+  provenance
+};</code></pre>
+
+        <p class="note-copy">The relationship context and the delegated authority are separate objects. That lets the runtime evaluate an action against persistent authority rather than treating possession of a key as sufficient permission.</p>
+
+        <div class="code-caption">Commitment is downstream of permission</div>
+        <pre class="research-code"><code>const proposal = normalize(intent, path);
+const decision = evaluate(proposal, path);
+
+if (decision !== "ALLOW") {
+  throw new Error("PACT_NOT_PERMITTED");
+}
+
+const pact = {
+  workspaceRef,
+  pathRef: path.id,
+  proposalRef: proposal.id,
+  decisionRef: decision.id,
+  parties,
+  paymentTerms,
+  proofPolicy,
+  status: "ACTIVE"
+};</code></pre>
+
+        <p class="code-note">Path answers <strong>what may happen</strong>. Pact records <strong>what has now been committed to</strong>. A later payment can therefore retain both permission lineage and commitment lineage.</p>
+      </section>
+
+      <section id="allows">
+        <div class="note-section-label">04 / What the construction allows</div>
+        <div class="allow-grid">
+          <div class="allow-item"><span>01</span><strong>Repeatable bounded authority</strong><p>An agent can act repeatedly inside an established Path without receiving unrestricted custody or asking the principal to reconstruct the same permission for every action.</p></div>
+          <div class="allow-item"><span>02</span><strong>Permission ≠ commitment</strong><p>A broad delegation can authorize many possible actions while a Pact records the particular economic terms the parties actually accepted.</p></div>
+          <div class="allow-item"><span>03</span><strong>Economic lineage</strong><p>A receipt can be related back to the Workspace, Path, Proposal, decision, Pact, proof, and settlement that produced it.</p></div>
+          <div class="allow-item"><span>04</span><strong>Relationship continuity</strong><p>Failure or reconciliation does not have to erase the governing context; Gaia can open a case and attach rectification obligations to the same history.</p></div>
+        </div>
+
+        <div class="state-machine" aria-label="Programmable relationship state sequence">
+          <span>Workspace</span><i>→</i><span>Path</span><i>→</i><span>Pact</span><i>→</i><span>Proof</span><i>→</i><span>Settlement</span><i>→</i><span>Receipt</span><i>↺</i><span>Relationship</span>
+        </div>
+      </section>
+
+      <section id="boundary">
+        <div class="note-section-label">05 / Boundary</div>
+        <div class="note-boundary">
+          <strong>This note does not claim that every economic relationship should live fully onchain.</strong>
+          <p>The narrower claim is that systems gain useful guarantees when authority, commitments, evidence, execution state, and recovery remain explicitly related instead of being reconstructed after each transaction. OpenRails is one implementation path; Concord explores composition of multiple such relationships.</p>
+        </div>
+      </section>
+
+      <section id="derived">
+        <div class="note-section-label">06 / Derived investigations</div>
+        <div class="derived-list">
+          <div><span>P-002</span><strong>Workspace</strong><p>Persistent authority context.</p></div>
+          <div><span>P-003</span><strong>Path</strong><p>Persistent bounded delegation.</p></div>
+          <div><span>P-004</span><strong>Pact</strong><p>Accepted economic commitment.</p></div>
+          <div><span>P-005</span><strong>RailsCard</strong><p>Deferred and portable economic authority.</p></div>
+          <div><span>E-001</span><strong>Dynamic Authorization Lanes</strong><p>Independent replay domains for independent authorities.</p></div>
+          <div><span>E-002</span><strong>Bilateral Execution Lanes</strong><p>High-throughput execution inside a continuing relationship.</p></div>
+          <div><span>P-008</span><strong>Gaia</strong><p>Exception, dispute, rectification and reconciliation state.</p></div>
+          <div><span>P-010</span><strong>Root / Child Accord</strong><p>Composition without erasing provider-level authority.</p></div>
+          <div><span>P-011</span><strong>Conditional Capital DAG</strong><p>Capital authority that follows dependencies, evidence and time.</p></div>
+        </div>
+        <p class="note-source">Primary implementations: <a href="https://github.com/Jaydearcadian/mcosm-openrails">OpenRails ↗</a> · <a href="https://github.com/etvjay/Concord">Concord ↗</a> · <a href="https://github.com/Jaydearcadian/OTC-chronograph">OTC Chronograph ↗</a></p>
+      </section>
+    </article>
+  </div>
+</main>
+<footer class="footer"><div class="site-shell footer-grid"><span>Jason V / P-001 / Programmable Relationship</span><a href="../">Research index ↗</a></div></footer>
+<script src="../../assets/site.js"></script>
+</body>
+</html>
