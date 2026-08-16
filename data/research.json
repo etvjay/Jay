@@ -1,0 +1,91 @@
+{
+  "identity": {
+    "name": "Jason V",
+    "role": "Protocol Engineer · Systems Researcher",
+    "method": ["Research", "Experiment", "Build", "Evidence"]
+  },
+  "directions": [
+    {
+      "id": "economic-relationships",
+      "name": "Programmable Economic Relationships",
+      "question": "What should exist between an agreement and a transaction?",
+      "systems": ["OpenRails", "Concord"]
+    },
+    {
+      "id": "confidential-coordination",
+      "name": "Confidential & Bounded Coordination",
+      "question": "Can independent actors coordinate private economic intent without surrendering authority or revealing every input?",
+      "systems": ["NOX ACCORD", "Concord"]
+    },
+    {
+      "id": "evidence-judgment",
+      "name": "Evidence, Judgment & Economic Understanding",
+      "question": "How should software move from observing reality to acting on an interpretation of it?",
+      "systems": ["RJP", "Noema"]
+    },
+    {
+      "id": "memory-agency",
+      "name": "Memory & Autonomous Agency",
+      "question": "How can autonomous systems improve from experience without silently surrendering decision authority to memory?",
+      "systems": ["Engram", "Thinking Reed"]
+    }
+  ],
+  "systems": [
+    {
+      "id": "openrails",
+      "name": "OpenRails",
+      "status": "Public build",
+      "repository": "https://github.com/Jaydearcadian/mcosm-openrails",
+      "researchQuestion": "What should exist between an agreement and a transaction?",
+      "lineage": "payment → intent → bounded authority → agreement + proof → persistent commercial relationship → verifiable settlement"
+    },
+    {
+      "id": "nox-accord",
+      "name": "NOX ACCORD",
+      "status": "Research build",
+      "repository": null,
+      "researchQuestion": "Can independent parties coordinate over private economic inputs without revealing the inputs themselves or delegating the entire decision to a trusted intermediary?",
+      "lineage": "private inputs → confidential coordination → bounded outcome disclosure"
+    },
+    {
+      "id": "concord",
+      "name": "Concord",
+      "status": "Testnet evidence",
+      "repository": "https://github.com/etvjay/Concord",
+      "researchQuestion": "Can independent capital providers coordinate private terms inside one persistent economic relationship without erasing provider-level authority, exposure, and settlement lineage?",
+      "lineage": "confidential formation + persistent economic relationship → provider-specific exposure → verifiable settlement lineage"
+    },
+    {
+      "id": "rjp",
+      "name": "RJP",
+      "status": "Live testnet system",
+      "repository": "https://github.com/Jaydearcadian/RJP",
+      "researchQuestion": "How can a system move from raw onchain behavior to actionable trust without reducing complex evidence to an opaque reputation score?",
+      "lineage": "observation → reproducible evidence → bounded judgment → independent downstream action"
+    },
+    {
+      "id": "noema",
+      "name": "Noema",
+      "status": "Foundation",
+      "repository": "https://github.com/etvjay/Noema",
+      "researchQuestion": "Can fragmented representations, claims, and evidence become an economic object software can inspect and reason about without losing the limits of the evidence underneath it?",
+      "lineage": "evidence + claims → verification → economic object → independent downstream reasoning"
+    },
+    {
+      "id": "engram",
+      "name": "Engram",
+      "status": "Tested system",
+      "repository": "https://github.com/etvjay/Engram",
+      "researchQuestion": "When can we truthfully claim that an autonomous system learned from a previous execution?",
+      "lineage": "execution history → operational memory → policy-governed recall → changed action → observed outcome"
+    },
+    {
+      "id": "thinking-reed",
+      "name": "Thinking Reed",
+      "status": "Research system",
+      "repository": null,
+      "researchQuestion": "Can a human and AI work continuously across research and production without generated artifacts erasing uncertainty, dissent, authority, or the lineage of why something was built?",
+      "lineage": "thought → evidence → decision → bounded execution → artifact → observed reality → revision"
+    }
+  ]
+}
