@@ -1,1 +1,85 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RJP — Jason V</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/styles.css"></head><body><header class="site-header"><div class="site-shell header-inner"><a class="brand" href="../../">JASON V <span>/ RESEARCH PRACTICE</span></a><nav class="nav"><a href="../../">Index</a><a href="../../research/">Research</a><a aria-current="page" href="../../#work">Work</a></nav></div></header><main><section class="project-hero"><div class="site-shell"><a class="back-link" href="../../#work">← Selected investigations</a><div class="project-kicker" style="margin-top:30px"><span>04</span><span>Live testnet system</span><span>Evidence, Judgment &amp; Economic Understanding</span></div><h1 class="project-title">RJP</h1><p class="project-deck">Reasoned Judgment Protocol: reproducible evidence into bounded, revisioned judgments downstream systems can use.</p></div></section><div class="site-shell project-layout"><aside class="project-nav"><a href="#research">Research question</a><a href="#position">Position</a><a href="#experiment">Experiment</a><a href="#build">Build</a><a href="#evidence">Evidence</a><a href="#boundary">Boundary</a><a href="#lineage">Lineage</a></aside><div class="project-content"><section id="research"><h2>Research question</h2><p class="lead">How can a system move from raw onchain behavior to actionable trust without reducing complex evidence to an opaque reputation score?</p></section><section id="position"><h2>Position</h2><p class="body-copy">Evidence, case construction, assessment, judgment, and consumption should remain explicit artifacts. A judgment should be domain-scoped, revisioned, inspectable, and independent from the policy a downstream consumer applies to it.</p></section><section id="experiment"><h2>Experiment</h2><p class="body-copy">Observe Base activity, build reproducible evidence and case objects, materialize bounded judgments on GenLayer, mirror compact state back to Base, and compare judgment-aware agents with direct non-judgment-aware baselines.</p></section><section id="build"><h2>Build</h2><p class="lead">Observation → evidence → case → judgment → mirrored state → independent action.</p><p class="body-copy">RJP includes an evidence builder, DomainSpec/CaseObject/AssessmentArtifact/JudgmentObject protocol objects, GenLayer intelligent contract, Base mirror and consumers, benchmark harnesses, API adapter, and frontend.</p></section><section id="evidence"><h2>Evidence</h2><ul class="evidence-list"><li>Reproducible Base evidence builds and offline case verification.</li><li>Live GenLayer evidence submission and judgment materialization.</li><li>Mirrored Base judgment reads and handshake previews.</li><li>Judgment-aware versus direct agent benchmarks.</li><li>SAFE → ALLOW, UNSAFE → DENY, and INSUFFICIENT_DATA → REFRESH paths demonstrated by domain and evidence state.</li></ul></section><section id="boundary"><h2>Current boundary</h2><p class="boundary">RJP is not a global reputation score. Judgments are bounded by domain, subject, evidence, observation window, freshness, and revision history; downstream systems retain their own decision policy.</p></section><section id="lineage"><h2>Research lineage</h2><div class="lineage">observation → reproducible evidence → bounded judgment → independent downstream action</div><p style="margin-top:28px"><a class="repo-link" href="https://github.com/Jaydearcadian/RJP">Repository ↗</a></p></section></div></div></main><footer class="footer"><div class="site-shell footer-grid"><span>Jason V / RJP</span><a href="../../research/#evidence-judgment">Research direction ↗</a></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <script data-theme-loader>(function(){try{var t=localStorage.getItem('jason-v-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="RJP — a Jason V project case study on reproducible evidence, bounded judgments and downstream onchain action.">
+  <title>RJP — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/editorial.css">
+  <link rel="stylesheet" href="../../assets/editorial-fixes.css">
+  <link rel="stylesheet" href="../../assets/project-case.css">
+</head>
+<body class="editorial">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Selected work</span><span>Evidence · Judgment · Onchain behavior</span></div></div>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Selected work / research / practice</small></a><nav class="ed-nav" aria-label="Primary"><a href="../../research/">Research</a><a href="../../experiments/">Experiments</a><a aria-current="page" href="../../projects/">Projects</a><a href="../../work/">Work &amp; Skills</a><a href="../../about/">About</a></nav><div class="ed-header-meta">Case study 05<br>RJP</div></div></header>
+
+  <main>
+    <section class="case-hero"><div class="ed-shell case-hero-grid"><div class="case-index">Selected project 05<br>RJP<br>Live testnet system<br>Base + GenLayer</div><div><div class="ed-kicker">Reasoned Judgment Protocol</div><h1 class="case-title">RJP</h1><p class="case-deck">A judgment layer that turns observable onchain behavior into reproducible evidence, bounded judgments and independently consumed downstream state.</p><p class="case-summary">I built RJP to avoid collapsing complex behavior into a global reputation score. Evidence, case construction, assessment, judgment and downstream consumption remain separate artifacts so a consumer can inspect what was observed, why a judgment exists, when it expires and how its own policy should react.</p><div class="case-actions"><a href="https://github.com/Jaydearcadian/RJP">Repository ↗</a><a href="#evidence">Evidence ↗</a></div></div></div></section>
+
+    <div class="case-strip"><div class="ed-shell case-strip-inner"><div class="case-fact"><span>Role</span><strong>Protocol &amp; systems engineering</strong></div><div class="case-fact"><span>Evidence source</span><strong>Base activity</strong></div><div class="case-fact"><span>Judgment layer</span><strong>GenLayer</strong></div><div class="case-fact"><span>Consumption</span><strong>Base mirror + agents</strong></div></div></div>
+
+    <div class="case-body">
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">01 / Problem</div><div class="case-content"><h2>Raw activity is observable. Actionable trust is an interpretation.</h2><p class="case-lead">Transactions, approvals and balances do not automatically answer whether a counterparty is safe or a permission target should be trusted.</p><p>RJP asks how software can move from observed behavior to a useful judgment without hiding the evidence or pretending one judgment should control every downstream decision.</p></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">02 / Model</div><div class="case-content"><h2>Evidence, judgment and action remain explicit stages.</h2><div class="case-architecture"><pre>Base behavior
+    │
+    ▼
+reproducible evidence
+    │
+    ▼
+CaseObject
+    │
+    ▼
+AssessmentArtifact
+    │
+    ▼
+JudgmentObject on GenLayer
+    │
+    ▼
+compact Base mirror
+    │
+    ▼
+consumer applies its own policy</pre><p>The judgment is bounded by domain, subject, evidence, observation window, freshness and revision history.</p></div><div class="case-ledger"><div class="case-row"><strong>DomainSpec</strong><p>Defines the question being judged rather than treating “reputation” as one universal dimension.</p></div><div class="case-row"><strong>CaseObject</strong><p>Reproducible evidence package tied to one subject and observation window.</p></div><div class="case-row"><strong>AssessmentArtifact</strong><p>Structured assessment that remains distinguishable from the final judgment state.</p></div><div class="case-row"><strong>JudgmentObject</strong><p>Revisioned, domain-scoped conclusion stored on GenLayer.</p></div><div class="case-row"><strong>Base mirror</strong><p>Compact read-side state so consumers can act without placing GenLayer on every hot path.</p></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">03 / What I built</div><div class="case-content"><h2>The stack spans observation, adjudication and downstream consumption.</h2><div class="case-ledger"><div class="case-row"><strong>Evidence builder</strong><p>Builds normalized, reproducible Base evidence with observation windows, manifests and Merkle roots.</p></div><div class="case-row"><strong>Protocol objects</strong><p>DomainSpec, CaseObject, AssessmentArtifact and JudgmentObject schemas and semantics.</p></div><div class="case-row"><strong>GenLayer contract</strong><p>Stores submitted evidence and revisioned judgments under deterministic or LLM evaluation modes.</p></div><div class="case-row"><strong>Base mirror</strong><p>Publishes compact judgment state for cheap downstream reads.</p></div><div class="case-row"><strong>Agent benchmarks</strong><p>Compares judgment-aware and direct agents to test whether the judgment layer changes behavior.</p></div><div class="case-row"><strong>API + frontend</strong><p>Local adapter and Next.js interface for building cases, submitting judgments and previewing mirrored state.</p></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">04 / Technical decision</div><div class="case-content"><h2>A judgment should not become downstream policy by accident.</h2><p class="case-lead">RJP publishes bounded state. The consuming wallet, contract or agent still decides what that state means for its own action.</p><div class="case-architecture"><pre>JudgmentObject
+  verdict = SAFE
+  domain  = counterparty_trust.base_trade_v1
+  subject = 0x…
+  window  = [start, end]
+  revision = n
+  freshness = …
+
+        │
+        ▼
+consumer policy A → ALLOW
+consumer policy B → REVIEW
+consumer policy C → ignore domain entirely</pre></div><p>This prevents a domain-specific judgment from silently turning into a universal reputation score.</p></div></div></section>
+
+      <section class="case-section" id="evidence"><div class="ed-shell case-section-grid"><div class="case-label">05 / Evidence</div><div class="case-content"><h2>The current live stack demonstrates evidence, judgment materialization and consumption.</h2><div class="case-evidence"><div class="case-evidence-row"><span>Evidence</span><strong>Base case generation</strong><p>Reproducible evidence builds and offline case verification are implemented.</p><span class="case-state">VERIFIED</span></div><div class="case-evidence-row"><span>GenLayer</span><strong>Judgment materialization</strong><p>Evidence submission and revisioned judgment state have been exercised live.</p><span class="case-state">LIVE</span></div><div class="case-evidence-row"><span>Base</span><strong>Mirror reads</strong><p>Compact mirrored judgment state and handshake previews are working.</p><span class="case-state">LIVE</span></div><div class="case-evidence-row"><span>Behavior</span><strong>SAFE / UNSAFE / INSUFFICIENT</strong><p>Current flows demonstrate ALLOW, DENY and REFRESH outcomes according to domain and evidence state.</p><span class="case-state">TESTED</span></div><div class="case-evidence-row"><span>Benchmark</span><strong>Judgment-aware agents</strong><p>Benchmarks compare consumers using RJP with direct non-judgment-aware baselines.</p><span class="case-state">TESTED</span></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">06 / Boundary</div><div class="case-content"><h2>RJP does not produce a universal identity score.</h2><p class="case-boundary">A judgment is only meaningful inside its domain, evidence set, observation window, freshness boundary and revision history. Downstream systems retain independent policy and may disagree about what action should follow.</p><p>The useful primitive is therefore not “reputation,” but a bounded judgment with enough evidence and context to be independently consumed.</p></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">07 / Research produced</div><div class="case-content"><h2>The project pressures the boundary between observation and identity.</h2><div class="case-architecture"><pre>identifier
+   ↓
+behavior
+   ↓
+evidence
+   ↓
+domain-scoped case
+   ↓
+revisioned judgment
+   ↓
+local downstream decision</pre><p>The broader research question is what observable behavior legitimately allows another system to conclude—and what should remain undecided.</p></div><div class="case-actions"><a href="../../experiments/">Behavioural Identity experiment ↗</a><a href="https://github.com/Jaydearcadian/RJP/blob/main/ONCHAIN_JUDGMENT_VS_DIRECT_BENCHMARK.md">Benchmark ↗</a></div></div></div></section>
+    </div>
+
+    <div class="ed-shell case-next"><a href="../nox-accord/"><span>Next selected project</span><strong>NOX ACCORD →</strong></a></div>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">RJP</div><small>Reasoned Judgment Protocol.</small></div><div><small>Project</small><br><a href="https://github.com/Jaydearcadian/RJP">Repository</a></div><div><small>Portfolio</small><br><a href="../../projects/">Projects</a><br><a href="../../research/">Research</a></div></div></footer>
+  <script src="../../assets/site.js"></script>
+</body>
+</html>
