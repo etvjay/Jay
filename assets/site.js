@@ -54,4 +54,133 @@
   document.querySelectorAll('[data-year]').forEach((node) => {
     node.textContent = new Date().getFullYear();
   });
+
+  /*
+   * Portfolio graph invariant:
+   * research -> implementation source
+   * project  -> research programme(s)
+   */
+  const path = window.location.pathname.replace(/\/+$/, '/');
+
+  const researchSources = [
+    {
+      match: '/research/programmable-relationship/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+        ['Concord case study', '../../work/concord/'],
+        ['Concord repository', 'https://github.com/etvjay/Concord'],
+      ],
+    },
+    {
+      match: '/research/workspace/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+      ],
+    },
+    {
+      match: '/research/path/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+      ],
+    },
+    {
+      match: '/research/pact/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+      ],
+    },
+    {
+      match: '/research/railscard/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+      ],
+    },
+    {
+      match: '/research/2d-nonce-lanes/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+      ],
+    },
+    {
+      match: '/research/dynamic-authorization-lanes/',
+      links: [
+        ['OpenRails case study', '../../work/openrails/'],
+        ['OpenRails repository', 'https://github.com/Jaydearcadian/mcosm-openrails'],
+      ],
+    },
+  ];
+
+  const source = researchSources.find((entry) => path.includes(entry.match));
+  if (source && !document.querySelector('[data-implementation-source]')) {
+    const aside = document.querySelector('.ed-aside');
+    if (aside) {
+      const box = document.createElement('div');
+      box.className = 'ed-aside-box';
+      box.dataset.implementationSource = '';
+      const links = source.links
+        .map(([label, href]) => `<a href="${href}"${href.startsWith('http') ? ' target="_blank" rel="noreferrer"' : ''}>${label} ↗</a>`)
+        .join('');
+      box.innerHTML = `<h3>Implementation source</h3><div class="ed-source-list">${links}</div>`;
+      aside.prepend(box);
+    }
+  }
+
+  const projectResearch = [
+    {
+      match: '/work/openrails/',
+      links: [
+        ['Governed Value', '../../experiments/#governed-value'],
+        ['Bounded Autonomy', '../../experiments/#bounded-autonomy'],
+      ],
+    },
+    {
+      match: '/work/concord/',
+      links: [
+        ['Governed Value', '../../experiments/#governed-value'],
+        ['Coordination Without Shared State', '../../experiments/#coordination-without-shared-state'],
+      ],
+    },
+    {
+      match: '/work/noema/',
+      links: [
+        ['Evidence & Understanding', '../../experiments/#evidence-and-understanding'],
+        ['Behavioural Identity', '../../experiments/#behavioural-identity'],
+      ],
+    },
+    {
+      match: '/work/engram/',
+      links: [['Persistent Agency', '../../experiments/#persistent-agency']],
+    },
+    {
+      match: '/work/rjp/',
+      links: [
+        ['Behavioural Identity', '../../experiments/#behavioural-identity'],
+        ['Evidence & Understanding', '../../experiments/#evidence-and-understanding'],
+      ],
+    },
+    {
+      match: '/work/nox-accord/',
+      links: [['Coordination Without Shared State', '../../experiments/#coordination-without-shared-state']],
+    },
+  ];
+
+  const project = projectResearch.find((entry) => path.includes(entry.match));
+  if (project && !document.querySelector('[data-research-programmes]')) {
+    const hero = document.querySelector('.case-hero .case-actions');
+    if (hero) {
+      project.links.forEach(([label, href]) => {
+        const link = document.createElement('a');
+        link.href = href;
+        link.textContent = `${label} ↗`;
+        link.dataset.researchProgrammes = '';
+        hero.appendChild(link);
+      });
+    }
+  }
 })();
