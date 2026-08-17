@@ -1,10 +1,6 @@
 name: Normalize site shell
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/site-normalize.yml'
   workflow_dispatch:
 
 permissions:
@@ -18,18 +14,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Normalize HTML theme, navigation and ledger links
+      - name: Normalize theme and global navigation only
         shell: python
         run: |
           from pathlib import Path
           import re
 
           ROOT = Path('.')
-
           head_loader = """<script data-theme-loader>(function(){try{var t=localStorage.getItem('jason-v-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>"""
 
           def root_prefix(path: Path) -> str:
-              # index.html at root => ''; section/index.html => '../'; nested story => '../../'
               depth = len(path.parent.parts) if path.parent != Path('.') else 0
               return '../' * depth
 
@@ -65,43 +59,6 @@ jobs:
 
               path.write_text(html, encoding='utf-8')
 
-          # Research index: every visible ledger row should navigate somewhere meaningful.
-          p = Path('research/index.html')
-          html = p.read_text(encoding='utf-8')
-          row_targets = {
-              'P-008': '../work/openrails/',
-              'P-010': '../work/concord/',
-              'P-011': 'https://github.com/Jaydearcadian/OTC-chronograph',
-              'EXP-02': '../work/rjp/',
-              'EXP-03': '../work/noema/',
-              'EXP-04': '../work/engram/',
-              'EXP-05': '../work/nox-accord/',
-              'EXP-06': '../work/openrails/',
-          }
-          for ident, target in row_targets.items():
-              pattern = rf'<div class="ed-ledger-row">(?=<div class="ed-ledger-id">{re.escape(ident)}</div>)(.*?)</div>\s*(?=(?:<div|<a|</div>))'
-              m = re.search(pattern, html, re.S)
-              if m:
-                  html = html[:m.start()] + f'<a class="ed-ledger-row" href="{target}">' + m.group(1) + '</a>\n      ' + html[m.end():]
-          p.write_text(html, encoding='utf-8')
-
-          # Experiments index: connect programmes to the strongest current evidence page.
-          p = Path('experiments/index.html')
-          html = p.read_text(encoding='utf-8')
-          exp_targets = {
-              'EXP-02': '../work/rjp/',
-              'EXP-03': '../work/noema/',
-              'EXP-04': '../work/engram/',
-              'EXP-05': '../work/nox-accord/',
-              'EXP-06': '../work/openrails/',
-          }
-          for ident, target in exp_targets.items():
-              pattern = rf'<div class="ed-ledger-row">(?=<div class="ed-ledger-id">{re.escape(ident)}</div>)(.*?)</div>\s*(?=(?:<div|<a|</div>))'
-              m = re.search(pattern, html, re.S)
-              if m:
-                  html = html[:m.start()] + f'<a class="ed-ledger-row" href="{target}">' + m.group(1) + '</a>\n' + html[m.end():]
-          p.write_text(html, encoding='utf-8')
-
       - name: Ensure dark theme is imported by the shared editorial stylesheet
         shell: python
         run: |
@@ -122,5 +79,5 @@ jobs:
           git config user.name "site-integrity-bot"
           git config user.email "actions@users.noreply.github.com"
           git add '*.html' assets/editorial.css
-          git commit -m "Normalize theme persistence and portfolio links"
+          git commit -m "Normalize theme persistence and global navigation"
           git push
