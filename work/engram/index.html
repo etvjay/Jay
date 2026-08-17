@@ -1,1 +1,86 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Engram — Jason V</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/styles.css"></head><body><header class="site-header"><div class="site-shell header-inner"><a class="brand" href="../../">JASON V <span>/ RESEARCH PRACTICE</span></a><nav class="nav"><a href="../../">Index</a><a href="../../research/">Research</a><a aria-current="page" href="../../#work">Work</a></nav></div></header><main><section class="project-hero"><div class="site-shell"><a class="back-link" href="../../#work">← Selected investigations</a><div class="project-kicker" style="margin-top:30px"><span>06</span><span>Tested system</span><span>Memory &amp; Autonomous Agency</span></div><h1 class="project-title">Engram</h1><p class="project-deck">Execution-memory infrastructure that tests whether prior experience causally changes later autonomous behavior.</p></div></section><div class="site-shell project-layout"><aside class="project-nav"><a href="#research">Research question</a><a href="#position">Position</a><a href="#experiment">Experiment</a><a href="#build">Build</a><a href="#evidence">Evidence</a><a href="#boundary">Boundary</a><a href="#lineage">Lineage</a></aside><div class="project-content"><section id="research"><h2>Research question</h2><p class="lead">When can we truthfully claim that an autonomous system learned from a previous execution?</p></section><section id="position"><h2>Position</h2><p class="body-copy">Retrieval is not influence. Prompt inclusion is not causal proof. A prior execution becomes operational memory only when it is recalled under comparable context, explicitly referenced by a later decision, changes action relative to a memory-free control, and leaves enough provenance to reconstruct the relationship.</p></section><section id="experiment"><h2>Experiment</h2><p class="body-copy">Run controlled scenarios with memory-free baselines, admitted operational lessons, policy-controlled recall, explicit memory influence, counterfactual comparison, and observed later outcomes across routing, deployment recovery, coding regressions, incident recovery, stale memory, and competing-memory cases.</p></section><section id="build"><h2>Build</h2><p class="lead">source execution → operational memory → recall → decision → changed action → observed outcome.</p><p class="body-copy">Engram implements a versioned execution protocol, runtime, policy system, persistence/vector layers, TypeScript and Python SDKs, HTTP API, semantic MCP, framework adapters, evaluation semantics, and experiment registry.</p></section><section id="evidence"><h2>Evidence</h2><ul class="evidence-list"><li>Protocol and runtime causal invariants covered by deterministic and conformance tests.</li><li>SDK, API, MCP, adapter, policy, and evaluation surfaces tested.</li><li>Multiple execution-memory scenarios preserved as governed experiment records.</li><li>Claim ledger separates deterministic proof from credential-gated cloud verification.</li></ul></section><section id="boundary"><h2>Current boundary</h2><p class="boundary">The external demo workload is simulated. Live CockroachDB Cloud persistence, Bedrock invocation, Managed MCP provenance, natural C-SPANN selection, and AWS deployment remain unverified until credentialed external proof succeeds.</p></section><section id="lineage"><h2>Research lineage</h2><div class="lineage">execution history → operational memory → policy-governed recall → changed action → observed outcome</div><p style="margin-top:28px"><a class="repo-link" href="https://github.com/etvjay/Engram">Repository ↗</a></p></section></div></div></main><footer class="footer"><div class="site-shell footer-grid"><span>Jason V / Engram</span><a href="../../research/#memory-agency">Research direction ↗</a></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <script data-theme-loader>(function(){try{var t=localStorage.getItem('jason-v-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Engram — a Jason V project case study on execution memory, causal influence and autonomous agent infrastructure.">
+  <title>Engram — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/editorial.css">
+  <link rel="stylesheet" href="../../assets/editorial-fixes.css">
+  <link rel="stylesheet" href="../../assets/project-case.css">
+</head>
+<body class="editorial">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Selected work</span><span>Agent infrastructure · Execution memory</span></div></div>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Selected work / research / practice</small></a><nav class="ed-nav" aria-label="Primary"><a href="../../research/">Research</a><a href="../../experiments/">Experiments</a><a aria-current="page" href="../../projects/">Projects</a><a href="../../work/">Work &amp; Skills</a><a href="../../about/">About</a></nav><div class="ed-header-meta">Case study 04<br>Engram</div></div></header>
+
+  <main>
+    <section class="case-hero"><div class="ed-shell case-hero-grid"><div class="case-index">Selected project 04<br>Engram<br>Tested system<br>Execution memory</div><div><div class="ed-kicker">Persistent agency / causal memory</div><h1 class="case-title">Engram</h1><p class="case-deck">Execution-memory infrastructure for testing whether prior experience actually changes a later autonomous decision.</p><p class="case-summary">I built Engram around a stricter definition of memory: retrieval is not enough. A prior execution only becomes operational memory when it is recalled under comparable conditions, explicitly influences a later decision, changes the action relative to a memory-free control, and leaves enough provenance to reconstruct what happened.</p><div class="case-actions"><a href="https://github.com/etvjay/Engram">Repository ↗</a><a href="#evidence">Evidence ↗</a></div></div></div></section>
+
+    <div class="case-strip"><div class="ed-shell case-strip-inner"><div class="case-fact"><span>Role</span><strong>Protocol &amp; agent infrastructure</strong></div><div class="case-fact"><span>Core primitive</span><strong>Execution memory</strong></div><div class="case-fact"><span>Surfaces</span><strong>Runtime + SDK/API/MCP</strong></div><div class="case-fact"><span>Evidence</span><strong>Deterministic causal tests</strong></div></div></div>
+
+    <div class="case-body">
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">01 / Problem</div><div class="case-content"><h2>Most agent “memory” systems prove retrieval, not influence.</h2><p class="case-lead">A memory that appears in a prompt has not yet been shown to matter.</p><p>Engram asks a narrower systems question: when can we truthfully say that a previous execution changed what an autonomous system did later?</p><p>The project treats that claim as something that should be reconstructable from execution evidence rather than inferred from a successful outcome.</p></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">02 / Model</div><div class="case-content"><h2>Memory is modeled as a causal relationship between two executions.</h2><div class="case-architecture"><pre>source execution
+      │
+      ▼
+operational memory
+      │
+      ▼
+comparable future recall
+      │
+      ▼
+application decision references memory
+      │
+      ▼
+action differs from memory-free control
+      │
+      ▼
+outcome observed + provenance retained</pre><p>Engram does not become the decision authority. The application or agent still chooses the business action.</p></div><div class="case-ledger"><div class="case-row"><strong>Episode</strong><p>Versioned execution record carrying intent, decisions, observations and outcome.</p></div><div class="case-row"><strong>Operational memory</strong><p>A lesson admitted from prior execution evidence under explicit policy.</p></div><div class="case-row"><strong>Recall</strong><p>Comparable prior experience retrieved for a future execution.</p></div><div class="case-row"><strong>Influence</strong><p>An explicit reference from the later decision to the memory that affected it.</p></div><div class="case-row"><strong>Counterfactual</strong><p>The memory-free control used to test whether the later action actually changed.</p></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">03 / What I built</div><div class="case-content"><h2>The project spans protocol semantics, runtime behavior, persistence and integration surfaces.</h2><div class="case-ledger"><div class="case-row"><strong>Execution protocol</strong><p>Versioned ExecutionEpisode model with decisions, observations, outcomes and provenance.</p></div><div class="case-row"><strong>Memory runtime</strong><p>Admission, eligibility, recall, influence, expiry and invalidation semantics.</p></div><div class="case-row"><strong>Persistence</strong><p>CockroachDB-backed execution, memory, vector and evaluation state with agent-scoped retrieval.</p></div><div class="case-row"><strong>SDK / API / MCP</strong><p>TypeScript and Python clients, HTTP routes and semantic MCP surfaces for inspecting execution memory.</p></div><div class="case-row"><strong>Adapters</strong><p>Integration surfaces for OpenAI Agents, LangGraph and custom agent runtimes.</p></div><div class="case-row"><strong>Evaluation</strong><p>Governed experiments for changed action, stale memory, competing memories and provenance mismatch.</p></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">04 / Technical decision</div><div class="case-content"><h2>Memory remains subordinate to present authority.</h2><p class="case-lead">Engram may surface prior experience; it does not silently turn past behavior into a new permission.</p><div class="case-architecture"><pre>context
+   │
+   ▼
+recall candidate
+   │
+   ▼
+policy / eligibility check
+   │
+   ├── blocked → no exposure / no influence
+   │
+   └── allowed
+          │
+          ▼
+application decides
+          │
+          ▼
+authorize → execute → observe</pre></div><p>This matters for stale or incompatible memory: retrieval can succeed while influence is still denied. Contradictory memories can also remain visible without the memory layer implicitly adjudicating between them.</p></div></div></section>
+
+      <section class="case-section" id="evidence"><div class="ed-shell case-section-grid"><div class="case-label">05 / Evidence</div><div class="case-content"><h2>The strongest current evidence is deterministic causal and conformance testing.</h2><div class="case-evidence"><div class="case-evidence-row"><span>Protocol</span><strong>Causal invariants</strong><p>Execution-memory semantics and provenance constraints are covered by deterministic and conformance tests.</p><span class="case-state">TESTED</span></div><div class="case-evidence-row"><span>Scenario</span><strong>Changed action</strong><p>Comparable later executions explicitly record memory influence and a changed action against a control.</p><span class="case-state">TESTED</span></div><div class="case-evidence-row"><span>Policy</span><strong>Bad / stale memory</strong><p>Retrieved memory may still be blocked before exposure or influence.</p><span class="case-state">TESTED</span></div><div class="case-evidence-row"><span>Integration</span><strong>SDK / API / MCP / adapters</strong><p>Core integration surfaces are exercised by the repository test suite.</p><span class="case-state">TESTED</span></div><div class="case-evidence-row"><span>Packaging</span><strong>AWS SAM build</strong><p>Deployment package path is covered; public cloud deployment is a separate claim.</p><span class="case-state">TESTED</span></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">06 / Boundary</div><div class="case-content"><h2>Cloud integration claims remain separate from implementation claims.</h2><p class="case-boundary">The external demo workload is simulated. Live CockroachDB Cloud persistence, Bedrock Titan invocation, Managed MCP provenance, natural C-SPANN index selection and AWS public deployment remain unverified until their credentialed proof paths succeed.</p><p>The repository explicitly distinguishes those states rather than treating integration code or skipped credential-gated tests as external verification.</p></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">07 / Research produced</div><div class="case-content"><h2>Engram turns “agent memory” into a testable systems claim.</h2><div class="case-architecture"><pre>execution history
+      ↓
+operational memory
+      ↓
+policy-governed recall
+      ↓
+explicit influence
+      ↓
+changed action
+      ↓
+observed outcome</pre><p>The resulting research programme asks when an autonomous system has acquired experience rather than merely accumulated history.</p></div><div class="case-actions"><a href="../../experiments/">Persistent Agency experiment ↗</a><a href="https://github.com/etvjay/Engram/blob/main/evidence/claims.yaml">Claim ledger ↗</a></div></div></div></section>
+    </div>
+
+    <div class="ed-shell case-next"><a href="../rjp/"><span>Next selected project</span><strong>RJP →</strong></a></div>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">Engram</div><small>Execution memory for autonomous agents.</small></div><div><small>Project</small><br><a href="https://github.com/etvjay/Engram">Repository</a></div><div><small>Portfolio</small><br><a href="../../projects/">Projects</a><br><a href="../../research/">Research</a></div></div></footer>
+  <script src="../../assets/site.js"></script>
+</body>
+</html>
