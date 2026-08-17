@@ -1,1 +1,84 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NOX ACCORD — Jason V</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/styles.css"></head><body><header class="site-header"><div class="site-shell header-inner"><a class="brand" href="../../">JASON V <span>/ RESEARCH PRACTICE</span></a><nav class="nav"><a href="../../">Index</a><a href="../../research/">Research</a><a aria-current="page" href="../../#work">Work</a></nav></div></header><main><section class="project-hero"><div class="site-shell"><a class="back-link" href="../../#work">← Selected investigations</a><div class="project-kicker" style="margin-top:30px"><span>02</span><span>Research build</span><span>Confidential &amp; Bounded Coordination</span></div><h1 class="project-title">NOX ACCORD</h1><p class="project-deck">A confidentiality experiment around private economic inputs, comparison, bounded allocation, and selective disclosure.</p></div></section><div class="site-shell project-layout"><aside class="project-nav"><a href="#research">Research question</a><a href="#position">Position</a><a href="#experiment">Experiment</a><a href="#build">Build</a><a href="#evidence">Evidence</a><a href="#boundary">Boundary</a><a href="#lineage">Lineage</a></aside><div class="project-content"><section id="research"><h2>Research question</h2><p class="lead">Can independent parties coordinate over private economic inputs without revealing the inputs themselves or delegating the entire decision to a trusted intermediary?</p></section><section id="position"><h2>Position</h2><p class="body-copy">Confidentiality matters when it expands the set of interactions parties can safely coordinate. The system should reveal only the outcome required for the next step while preserving bounded authority around selection and allocation.</p></section><section id="experiment"><h2>Experiment</h2><p class="body-copy">Explore private offer submission, confidential comparison, conditional selection, bounded allocation, selective decryption, and a public lifecycle around the final executable result.</p></section><section id="build"><h2>Build</h2><p class="lead">Private inputs → confidential comparison → bounded allocation → selective disclosure → public consequence.</p><p class="body-copy">NOX ACCORD is treated here as a distinct research build from Concord. It investigates confidential procurement/allocation semantics rather than persistent syndicated-capital relationships.</p></section><section id="evidence"><h2>Evidence</h2><ul class="evidence-list"><li>Confidential-input coordination model implemented as a separate experimental system.</li><li>Selection and allocation modeled independently from public settlement.</li><li>Selective-disclosure boundary used to avoid treating privacy as an all-or-nothing property.</li></ul></section><section id="boundary"><h2>Current boundary</h2><p class="boundary">NOX ACCORD is presented as a research build, not as a production confidential market or audited financial protocol. Its value in the portfolio is the question it tested and the design primitives later explored elsewhere.</p></section><section id="lineage"><h2>Research lineage</h2><div class="lineage">private inputs → confidential coordination → bounded outcome disclosure</div></section></div></div></main><footer class="footer"><div class="site-shell footer-grid"><span>Jason V / NOX ACCORD</span><a href="../../research/#confidential-coordination">Research direction ↗</a></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <script data-theme-loader>(function(){try{var t=localStorage.getItem('jason-v-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="NOX ACCORD — a Jason V research-build case study on confidential coordination, bounded allocation and selective disclosure.">
+  <title>NOX ACCORD — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/editorial.css">
+  <link rel="stylesheet" href="../../assets/editorial-fixes.css">
+  <link rel="stylesheet" href="../../assets/project-case.css">
+</head>
+<body class="editorial">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Selected work</span><span>Confidential coordination · Research build</span></div></div>
+  <header class="ed-header"><div class="ed-shell ed-header-row"><a class="ed-mark" href="../../">Jason V<small>Selected work / research / practice</small></a><nav class="ed-nav" aria-label="Primary"><a href="../../research/">Research</a><a href="../../experiments/">Experiments</a><a aria-current="page" href="../../projects/">Projects</a><a href="../../work/">Work &amp; Skills</a><a href="../../about/">About</a></nav><div class="ed-header-meta">Case study 06<br>NOX ACCORD</div></div></header>
+
+  <main>
+    <section class="case-hero"><div class="ed-shell case-hero-grid"><div class="case-index">Selected project 06<br>NOX ACCORD<br>Research build<br>Confidential coordination</div><div><div class="ed-kicker">Private inputs / bounded outcomes</div><h1 class="case-title">NOX ACCORD</h1><p class="case-deck">A research build exploring whether independent parties can coordinate over private economic inputs without revealing every input or handing the full decision to a trusted intermediary.</p><p class="case-summary">NOX ACCORD is intentionally distinct from Concord. Its focus is not a persistent syndicated-capital relationship; it is the narrower coordination problem of private offer submission, confidential comparison, bounded allocation and selective disclosure before a public consequence.</p><div class="case-actions"><a href="#model">System model ↗</a><a href="#boundary">Claim boundary ↗</a></div></div></div></section>
+
+    <div class="case-strip"><div class="ed-shell case-strip-inner"><div class="case-fact"><span>Role</span><strong>Protocol research &amp; systems design</strong></div><div class="case-fact"><span>Core question</span><strong>Coordination over private state</strong></div><div class="case-fact"><span>Mechanism</span><strong>Bounded allocation</strong></div><div class="case-fact"><span>Status</span><strong>Research build</strong></div></div></div>
+
+    <div class="case-body">
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">01 / Problem</div><div class="case-content"><h2>Coordination often asks parties to reveal more than the next decision actually requires.</h2><p class="case-lead">The experiment starts from a simple asymmetry: a joint outcome may require comparing private inputs without requiring those inputs to become shared public state.</p><p>NOX ACCORD asks whether the comparison and allocation step can remain confidential while the resulting authority and public consequence stay bounded and inspectable.</p></div></div></section>
+
+      <section class="case-section" id="model"><div class="ed-shell case-section-grid"><div class="case-label">02 / Model</div><div class="case-content"><h2>Privacy is treated as selective visibility, not an all-or-nothing property.</h2><div class="case-architecture"><pre>private offers / constraints
+        │
+        ▼
+confidential comparison
+        │
+        ▼
+conditional selection
+        │
+        ▼
+bounded allocation
+        │
+        ▼
+selective disclosure
+        │
+        ▼
+public executable consequence</pre><p>The design question is not “hide everything.” It is which information must become visible at each boundary for the next actor to act safely.</p></div><div class="case-ledger"><div class="case-row"><strong>Private input</strong><p>An economic term or constraint that should not automatically become shared state.</p></div><div class="case-row"><strong>Comparison</strong><p>The confidential step that evaluates compatible or preferable inputs.</p></div><div class="case-row"><strong>Bounded allocation</strong><p>The selected outcome is constrained rather than granting unrestricted authority.</p></div><div class="case-row"><strong>Selective disclosure</strong><p>Only the result required for the next step is revealed.</p></div><div class="case-row"><strong>Public consequence</strong><p>The externally actionable result exists separately from the private formation process.</p></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">03 / What I built</div><div class="case-content"><h2>The system was built as an experimental apparatus for confidential procurement and allocation semantics.</h2><p>Its contribution to the portfolio is the separation between private formation and public consequence, and the explicit treatment of selection, allocation and disclosure as different stages rather than one opaque “private market” operation.</p><div class="case-ledger"><div class="case-row"><strong>Offer submission</strong><p>Private economic inputs enter the coordination process without becoming public by default.</p></div><div class="case-row"><strong>Selection logic</strong><p>Comparison is treated independently from final execution.</p></div><div class="case-row"><strong>Allocation semantics</strong><p>The selected outcome remains bounded by the decision context.</p></div><div class="case-row"><strong>Disclosure boundary</strong><p>The system exposes only what the next action requires rather than the complete private state.</p></div></div></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">04 / Technical decision</div><div class="case-content"><h2>Confidentiality is useful only if authority remains legible at the point of consequence.</h2><p class="case-lead">A private comparison should not silently become unrestricted execution authority.</p><div class="case-architecture"><pre>private state
+    │
+    ▼
+confidential computation
+    │
+    ▼
+selected bounded result
+    │
+    ├── reveal only required output
+    │
+    └── preserve authority constraints
+            │
+            ▼
+       public next step</pre></div><p>This distinction later became important in other systems: private coordination may produce a public commitment, but it should not erase who can act, what was selected or which authority boundary remains in force.</p></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">05 / Evidence</div><div class="case-content"><h2>The current evidence is design and implementation evidence, not a production-confidential-market claim.</h2><div class="case-evidence"><div class="case-evidence-row"><span>Model</span><strong>Confidential-input coordination</strong><p>The research build models private inputs, comparison and bounded output as separate stages.</p><span class="case-state">IMPLEMENTED</span></div><div class="case-evidence-row"><span>Semantics</span><strong>Selection ≠ settlement</strong><p>Selection and allocation remain conceptually separate from public execution.</p><span class="case-state">IMPLEMENTED</span></div><div class="case-evidence-row"><span>Privacy</span><strong>Selective disclosure</strong><p>The design avoids treating confidentiality as an all-or-nothing property.</p><span class="case-state">RESEARCH</span></div></div></div></div></section>
+
+      <section class="case-section" id="boundary"><div class="ed-shell case-section-grid"><div class="case-label">06 / Boundary</div><div class="case-content"><h2>The project should be read as an experiment, not a production market.</h2><p class="case-boundary">NOX ACCORD does not claim audited financial security, a production confidential exchange, or universal confidentiality guarantees. Its value is the coordination model it tested and the privacy/authority boundaries that later reappear in other projects.</p><p>This is also why it remains separate from Concord: similar privacy questions, different economic object and different lifecycle.</p></div></div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid"><div class="case-label">07 / Research produced</div><div class="case-content"><h2>The experiment points toward coordination without epistemic symmetry.</h2><div class="case-architecture"><pre>different private interiors
+        │
+        ▼
+shared compatibility boundary
+        │
+        ▼
+selective proof / disclosure
+        │
+        ▼
+shared consequence
+
+without requiring shared internal state</pre><p>The broader question is whether actors must know the same things in order to coordinate safely—or whether compatibility at the action boundary is enough.</p></div><div class="case-actions"><a href="../../experiments/">Coordination Without Shared State ↗</a><a href="../concord/">Related project: Concord ↗</a></div></div></div></section>
+    </div>
+
+    <div class="ed-shell case-next"><a href="../../projects/"><span>Selected work</span><strong>All projects →</strong></a></div>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">NOX ACCORD</div><small>Confidential coordination research build.</small></div><div><small>Related</small><br><a href="../concord/">Concord</a></div><div><small>Portfolio</small><br><a href="../../projects/">Projects</a><br><a href="../../research/">Research</a></div></div></footer>
+  <script src="../../assets/site.js"></script>
+</body>
+</html>
