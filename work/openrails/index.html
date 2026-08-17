@@ -1,1 +1,186 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>OpenRails — Jason V</title><link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../assets/styles.css"></head><body><header class="site-header"><div class="site-shell header-inner"><a class="brand" href="../../">JASON V <span>/ RESEARCH PRACTICE</span></a><nav class="nav"><a href="../../">Index</a><a href="../../research/">Research</a><a aria-current="page" href="../../#work">Work</a></nav></div></header><main><section class="project-hero"><div class="site-shell"><a class="back-link" href="../../#work">← Selected investigations</a><div class="project-kicker" style="margin-top:30px"><span>01</span><span>Public build</span><span>Programmable Economic Relationships</span></div><h1 class="project-title">OpenRails</h1><p class="project-deck">Programmable clearing and settlement for work, commerce, and agentic services.</p></div></section><div class="site-shell project-layout"><aside class="project-nav"><a href="#research">Research question</a><a href="#position">Position</a><a href="#experiment">Experiment</a><a href="#build">Build</a><a href="#evidence">Evidence</a><a href="#boundary">Boundary</a><a href="#lineage">Lineage</a></aside><div class="project-content"><section id="research"><h2>Research question</h2><p class="lead">What should exist between an agreement and a transaction?</p></section><section id="position"><h2>Position</h2><p class="body-copy">Commercial coordination is more legible when authority, accepted terms, proof, settlement, and receipts remain part of one durable lifecycle. A payment should be the consequence of a governed relationship, not the only object the system remembers.</p></section><section id="experiment"><h2>Experiment</h2><p class="body-copy">Model a persistent Workspace where people, businesses, applications, and agents operate through bounded Paths; turn requests into Intents and Proposals; bind accepted terms in a Pact; verify Proof; settle direct or streamed USDC on Arc; and reconcile the result through a Receipt.</p></section><section id="build"><h2>Build</h2><p class="lead">Workspace → delegated authority → agreement → proof → settlement → receipt.</p><p class="body-copy">OpenRails implements the coordination runtime, Arc settlement contracts, wallet-signed state transitions, relayed execution, indexed reads, and shared SDK, CLI, REST, and MCP surfaces. Circle infrastructure is integrated around the lifecycle rather than replacing its authority model.</p></section><section id="evidence"><h2>Evidence</h2><ul class="evidence-list"><li>Deployed V2 contract system on Arc with USDC-native settlement.</li><li>Persistent public Runtime for Workspace coordination.</li><li>EOA and EIP-1271 signing paths, replay protection, escrow, streaming settlement, and receipts.</li><li>Published SDK and MCP integration surfaces.</li><li>Fresh public Workspace-to-settlement verification records documented in the repository.</li></ul></section><section id="boundary"><h2>Current boundary</h2><p class="boundary">OpenRails is the coordination, clearing, and settlement layer—not a wallet, bridge, or autonomous financial authority. Wallets and applications authorize execution; Arc transaction evidence and Vault state remain the source of truth for value movement.</p></section><section id="lineage"><h2>Research lineage</h2><div class="lineage">payment → intent → bounded authority → agreement + proof → persistent commercial relationship → verifiable settlement</div><p style="margin-top:28px"><a class="repo-link" href="https://github.com/Jaydearcadian/mcosm-openrails">Repository ↗</a></p></section></div></div></main><footer class="footer"><div class="site-shell footer-grid"><span>Jason V / OpenRails</span><a href="../../research/#economic-relationships">Research direction ↗</a></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <script data-theme-loader>(function(){try{var t=localStorage.getItem('jason-v-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="OpenRails — a Jason V project case study on programmable commercial coordination, bounded authority and verifiable settlement.">
+  <title>OpenRails — Jason V</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/editorial.css">
+  <link rel="stylesheet" href="../../assets/editorial-fixes.css">
+  <link rel="stylesheet" href="../../assets/project-case.css">
+</head>
+<body class="editorial">
+  <div class="ed-topline"><div class="ed-shell"><span>Jason V / Selected work</span><span>Product · Protocol · Settlement infrastructure</span></div></div>
+  <header class="ed-header">
+    <div class="ed-shell ed-header-row">
+      <a class="ed-mark" href="../../">Jason V<small>Selected work / research / practice</small></a>
+      <nav class="ed-nav" aria-label="Primary"><a href="../../research/">Research</a><a href="../../experiments/">Experiments</a><a aria-current="page" href="../../projects/">Projects</a><a href="../../work/">Work &amp; Skills</a><a href="../../about/">About</a></nav>
+      <div class="ed-header-meta">Case study 01<br>OpenRails</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="case-hero">
+      <div class="ed-shell case-hero-grid">
+        <div class="case-index">Selected project 01<br>OpenRails<br>Public build<br>Arc Testnet</div>
+        <div>
+          <div class="ed-kicker">Programmable economic relationships</div>
+          <h1 class="case-title">OpenRails</h1>
+          <p class="case-deck">A coordination and settlement system for turning bounded commercial authority into verifiable payment outcomes.</p>
+          <p class="case-summary">I built OpenRails around a simple separation: agreement, authority, proof and settlement should remain connected without becoming the same thing. The system carries a commercial relationship from persistent context through bounded delegation, accepted terms and evidence into direct or streamed USDC settlement.</p>
+          <div class="case-actions"><a href="https://github.com/Jaydearcadian/mcosm-openrails">Repository ↗</a><a href="https://openrails.pages.dev">Web application ↗</a><a href="../../research/programmable-relationship/">Research lineage ↗</a></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="case-strip"><div class="ed-shell case-strip-inner">
+      <div class="case-fact"><span>Role</span><strong>Product &amp; protocol engineering</strong></div>
+      <div class="case-fact"><span>System</span><strong>Runtime + contracts + SDK/MCP</strong></div>
+      <div class="case-fact"><span>Settlement</span><strong>USDC on Arc Testnet</strong></div>
+      <div class="case-fact"><span>Evidence</span><strong>Public delegated lifecycle</strong></div>
+    </div></div>
+
+    <div class="case-body">
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">01 / Problem</div>
+        <div class="case-content">
+          <h2>Most payment systems remember the transfer better than the relationship that authorized it.</h2>
+          <p class="case-lead">OpenRails asks what should exist between an agreement and a transaction.</p>
+          <p>A commercial payment often depends on more than sender, recipient and amount. It may depend on who is allowed to act, under which limits, against which accepted terms, after what evidence, and with what record afterward.</p>
+          <p>The project began by treating those pieces as one lifecycle while keeping their authority boundaries distinct.</p>
+        </div>
+      </div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">02 / Product model</div>
+        <div class="case-content">
+          <h2>A commercial relationship is modeled as persistent state, not a sequence of disconnected screens.</h2>
+          <div class="case-architecture"><pre>Workspace
+    │
+    ├── Actors
+    │
+    └── Path ── bounded delegated authority
+          │
+          ▼
+        Intent
+          │
+       Proposal
+          │
+        Decision
+          │
+          ▼
+         Pact ── accepted economic commitment
+          │
+         Proof
+          │
+          ▼
+      Settlement ── Arc / USDC
+          │
+          ▼
+        Receipt</pre><p>The Runtime governs coordination state. The Arc Hub/Vault remains the financial settlement boundary.</p></div>
+          <div class="case-ledger">
+            <div class="case-row"><strong>Workspace</strong><p>Persistent context for the commercial relationship and its participating actors.</p></div>
+            <div class="case-row"><strong>Path</strong><p>Repeatable delegated authority with explicit limits rather than unrestricted custody.</p></div>
+            <div class="case-row"><strong>Pact</strong><p>The point where accepted terms become a committed relationship state.</p></div>
+            <div class="case-row"><strong>Proof</strong><p>Evidence associated with the Pact before downstream settlement is treated as justified.</p></div>
+            <div class="case-row"><strong>Settlement / Receipt</strong><p>Onchain value movement and the inspectable record that reconciles the outcome.</p></div>
+          </div>
+        </div>
+      </div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">03 / What I built</div>
+        <div class="case-content">
+          <h2>The project spans the protocol model and the surfaces needed to actually use it.</h2>
+          <p>The current implementation includes a persistent wallet-signed Runtime, Arc settlement contracts, EOA and EIP-1271 signing paths, direct and streaming settlement, relayed execution, indexed reads, and shared developer/agent surfaces.</p>
+          <div class="case-ledger">
+            <div class="case-row"><strong>Runtime</strong><p>Workspace, Actor, Path, Intent, Proposal, Pact and Proof transitions with wallet-scoped authority and persistent storage.</p></div>
+            <div class="case-row"><strong>Arc contracts</strong><p>Explicit payer authorization, replay protection, USDC escrow, direct/streamed settlement and receipts.</p></div>
+            <div class="case-row"><strong>SDK + CLI</strong><p>Typed client access and dry-run-first command-line execution for payment flows.</p></div>
+            <div class="case-row"><strong>REST + MCP</strong><p>Shared application and agent surfaces for discovery, planning, preparation, validation, verification and safe reads.</p></div>
+            <div class="case-row"><strong>Web application</strong><p>A browser-facing path for connecting a wallet, creating Workspaces and exercising the settlement lifecycle.</p></div>
+          </div>
+        </div>
+      </div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">04 / Technical decisions</div>
+        <div class="case-content">
+          <h2>The architecture keeps coordination authority separate from financial authority.</h2>
+          <p class="case-lead">The Runtime can determine that a requested transition is allowed without becoming the thing that moves the money.</p>
+          <div class="case-architecture"><pre>Signed coordination transition
+        │
+        ▼
+Persistent Runtime
+  evaluates authority + lifecycle state
+        │
+        ├── ALLOWED / COMMITTED / VERIFIED
+        │
+        └── BLOCKED + reason
+
+Separate wallet authorization
+        │
+        ▼
+Arc Hub / Vault
+  verifies payer + replay state + funds
+        │
+        ▼
+Onchain settlement receipt</pre></div>
+          <p>This separation lets an agent or application participate in planning and lifecycle coordination without inheriting custody simply because it can call the Runtime.</p>
+          <h3>Replay domains</h3>
+          <p>The Hub also became the test bed for application-level two-dimensional nonce domains and later authorization-scoped lanes for deferred RailsCards. Those mechanisms are documented separately as research because the implementation pressure produced a reusable systems question.</p>
+        </div>
+      </div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">05 / Evidence</div>
+        <div class="case-content">
+          <h2>The strongest proof is an end-to-end delegated lifecycle, including a negative authorization result.</h2>
+          <p>A public smoke harness exercised the Neon-backed Runtime and Arc V2 settlement path. The August 13 verification registered a Workspace, evaluated a delegated Proposal, committed a Pact, verified Proof, blocked an over-limit Proposal, then settled and reconciled the resulting Arc Vault state.</p>
+          <div class="case-evidence">
+            <div class="case-evidence-row"><span>Runtime</span><strong>Workspace registration</strong><p>Persistent wallet-authorized state.</p><span class="case-state">PREPARED</span></div>
+            <div class="case-evidence-row"><span>Authority</span><strong>In-limit Proposal</strong><p>Delegated request accepted under the active Path.</p><span class="case-state">ALLOWED</span></div>
+            <div class="case-evidence-row"><span>Negative test</span><strong>Over-limit Proposal</strong><p>Same lifecycle rejected when the Path limit was exceeded.</p><span class="case-state">BLOCKED</span></div>
+            <div class="case-evidence-row"><span>Commitment</span><strong>Pact</strong><p>Accepted terms recorded in Runtime state.</p><span class="case-state">COMMITTED</span></div>
+            <div class="case-evidence-row"><span>Evidence</span><strong>Proof</strong><p>Submitted proof advanced to verified state.</p><span class="case-state">PROOF_VERIFIED</span></div>
+            <div class="case-evidence-row"><span>Settlement</span><strong>Arc lifecycle</strong><p>Open, settle and residual flush transactions completed; final Vault balance reconciled to zero.</p><span class="case-state">TESTNET</span></div>
+          </div>
+          <div class="case-actions"><a href="https://github.com/Jaydearcadian/mcosm-openrails/blob/main/docs/public-workspace-runtime-settlement-evidence.md">Public evidence record ↗</a></div>
+        </div>
+      </div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">06 / Boundary</div>
+        <div class="case-content">
+          <h2>What this evidence does—and does not—establish.</h2>
+          <p class="case-boundary">OpenRails has public testnet evidence for its delegated Workspace-to-settlement lifecycle. That does not establish production security, mainnet readiness, or that every surrounding Circle integration has been exercised end-to-end.</p>
+          <p>The persistent Runtime does not custody keys, sign for a wallet, broadcast financial transactions or become the source of truth for value movement. Arc transaction evidence and Vault state remain authoritative for settlement.</p>
+        </div>
+      </div></section>
+
+      <section class="case-section"><div class="ed-shell case-section-grid">
+        <div class="case-label">07 / Research produced</div>
+        <div class="case-content">
+          <h2>The project became useful as research when implementation pressure produced reusable questions.</h2>
+          <div class="case-research-links">
+            <a href="../../research/programmable-relationship/"><span>P-001</span><strong>The Programmable Relationship</strong><em>Read ↗</em></a>
+            <a href="../../research/workspace/"><span>P-002</span><strong>Workspace</strong><em>Read ↗</em></a>
+            <a href="../../research/path/"><span>P-003</span><strong>Path</strong><em>Read ↗</em></a>
+            <a href="../../research/pact/"><span>P-004</span><strong>Pact</strong><em>Read ↗</em></a>
+            <a href="../../research/railscard/"><span>P-005</span><strong>RailsCard</strong><em>Read ↗</em></a>
+            <a href="../../research/2d-nonce-lanes/"><span>E-001</span><strong>2D Nonce Lanes</strong><em>Read ↗</em></a>
+            <a href="../../research/dynamic-authorization-lanes/"><span>E-002</span><strong>Dynamic Authorization Lanes</strong><em>Read ↗</em></a>
+          </div>
+        </div>
+      </div></section>
+    </div>
+
+    <div class="ed-shell case-next"><a href="../concord/"><span>Next selected project</span><strong>Concord →</strong></a></div>
+  </main>
+
+  <footer class="ed-footer"><div class="ed-shell ed-footer-grid"><div><div class="ed-footer-title">OpenRails</div><small>Selected work / Jason V.</small></div><div><small>Project</small><br><a href="https://github.com/Jaydearcadian/mcosm-openrails">Repository</a><br><a href="https://openrails.pages.dev">Web app</a></div><div><small>Portfolio</small><br><a href="../../projects/">Projects</a><br><a href="../../research/">Research</a></div></div></footer>
+  <script src="../../assets/site.js"></script>
+</body>
+</html>
