@@ -42,6 +42,34 @@
   max-width:850px;
 }
 
+.ed-ledger-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 16px;
+  margin-top:8px;
+  font:400 8.5px/1.5 var(--mono);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.ed-ledger-links a{
+  color:var(--accent);
+  border-bottom:1px solid transparent;
+}
+
+.ed-ledger-links a:hover{
+  border-color:var(--accent);
+}
+
+.ed-external-ref{
+  display:inline-block;
+  margin-top:8px;
+  font:500 8.5px/1.5 var(--mono);
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+
 /* Intermediate/tablet widths were the failure point in the screenshot. Collapse early. */
 @media(max-width:1180px){
   .ed-practice{
