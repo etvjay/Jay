@@ -1,0 +1,126 @@
+name: Normalize site shell
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/site-normalize.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Normalize HTML theme, navigation and ledger links
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          ROOT = Path('.')
+
+          head_loader = """<script data-theme-loader>(function(){try{var t=localStorage.getItem('jason-v-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;}catch(e){}})();</script>"""
+
+          def root_prefix(path: Path) -> str:
+              # index.html at root => ''; section/index.html => '../'; nested story => '../../'
+              depth = len(path.parent.parts) if path.parent != Path('.') else 0
+              return '../' * depth
+
+          def normalize_nav(html: str, prefix: str) -> str:
+              routes = {
+                  'Research': prefix + 'research/',
+                  'Experiments': prefix + 'experiments/',
+                  'Projects': prefix + 'projects/',
+                  'Work &amp; Skills': prefix + 'work/',
+                  'About': prefix + 'about/',
+              }
+              for label, href in routes.items():
+                  pattern = rf'(<a\b[^>]*?href=")[^"]*("[^>]*>{re.escape(label)}</a>)'
+                  html = re.sub(pattern, rf'\g<1>{href}\g<2>', html)
+              return html
+
+          for path in ROOT.rglob('*.html'):
+              if '.git' in path.parts:
+                  continue
+              html = path.read_text(encoding='utf-8')
+              if 'assets/editorial.css' not in html:
+                  continue
+
+              prefix = root_prefix(path)
+              html = normalize_nav(html, prefix)
+
+              if 'data-theme-loader' not in html:
+                  html = html.replace('<head>', '<head>\n  ' + head_loader, 1)
+
+              site_src = prefix + 'assets/site.js'
+              if 'assets/site.js' not in html:
+                  html = html.replace('</body>', f'  <script src="{site_src}"></script>\n</body>', 1)
+
+              path.write_text(html, encoding='utf-8')
+
+          # Research index: every visible ledger row should navigate somewhere meaningful.
+          p = Path('research/index.html')
+          html = p.read_text(encoding='utf-8')
+          row_targets = {
+              'P-008': '../work/openrails/',
+              'P-010': '../work/concord/',
+              'P-011': 'https://github.com/Jaydearcadian/OTC-chronograph',
+              'EXP-02': '../work/rjp/',
+              'EXP-03': '../work/noema/',
+              'EXP-04': '../work/engram/',
+              'EXP-05': '../work/nox-accord/',
+              'EXP-06': '../work/openrails/',
+          }
+          for ident, target in row_targets.items():
+              pattern = rf'<div class="ed-ledger-row">(?=<div class="ed-ledger-id">{re.escape(ident)}</div>)(.*?)</div>\s*(?=(?:<div|<a|</div>))'
+              m = re.search(pattern, html, re.S)
+              if m:
+                  html = html[:m.start()] + f'<a class="ed-ledger-row" href="{target}">' + m.group(1) + '</a>\n      ' + html[m.end():]
+          p.write_text(html, encoding='utf-8')
+
+          # Experiments index: connect programmes to the strongest current evidence page.
+          p = Path('experiments/index.html')
+          html = p.read_text(encoding='utf-8')
+          exp_targets = {
+              'EXP-02': '../work/rjp/',
+              'EXP-03': '../work/noema/',
+              'EXP-04': '../work/engram/',
+              'EXP-05': '../work/nox-accord/',
+              'EXP-06': '../work/openrails/',
+          }
+          for ident, target in exp_targets.items():
+              pattern = rf'<div class="ed-ledger-row">(?=<div class="ed-ledger-id">{re.escape(ident)}</div>)(.*?)</div>\s*(?=(?:<div|<a|</div>))'
+              m = re.search(pattern, html, re.S)
+              if m:
+                  html = html[:m.start()] + f'<a class="ed-ledger-row" href="{target}">' + m.group(1) + '</a>\n' + html[m.end():]
+          p.write_text(html, encoding='utf-8')
+
+      - name: Ensure dark theme is imported by the shared editorial stylesheet
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('assets/editorial.css')
+          css = p.read_text(encoding='utf-8')
+          marker = "@import url('./theme.css');"
+          if marker not in css:
+              css = marker + "\n" + css
+              p.write_text(css, encoding='utf-8')
+
+      - name: Commit normalized site
+        run: |
+          if git diff --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git config user.name "site-integrity-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add '*.html' assets/editorial.css
+          git commit -m "Normalize theme persistence and portfolio links"
+          git push
